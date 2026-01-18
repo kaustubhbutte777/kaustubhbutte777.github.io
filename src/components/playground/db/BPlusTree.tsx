@@ -186,14 +186,64 @@ export default function BPlusTree() {
     return 1 + Math.max(...node.children.map(getTreeDepth));
   };
 
+  // Count total leaf nodes for proper spacing
+  const countLeaves = (node: BPlusNode | null): number => {
+    if (!node) return 0;
+    if (node.isLeaf) return 1;
+    return node.children.reduce((sum, child) => sum + countLeaves(child), 0);
+  };
+
+  // Calculate positions for all nodes using leaf-based spacing
+  const calculateNodePositions = (node: BPlusNode | null, startX: number, endX: number, level: number, positions: Map<string, { x: number; y: number }>) => {
+    if (!node) return;
+
+    const y = level * 80 + 20;
+
+    if (node.isLeaf) {
+      // Leaf nodes are centered in their allocated space
+      const x = (startX + endX) / 2;
+      positions.set(node.id, { x, y });
+    } else {
+      // Internal nodes: first position children, then center parent above them
+      const totalLeaves = countLeaves(node);
+      const leafWidth = (endX - startX) / totalLeaves;
+
+      let currentX = startX;
+      node.children.forEach((child) => {
+        const childLeaves = countLeaves(child);
+        const childEndX = currentX + childLeaves * leafWidth;
+        calculateNodePositions(child, currentX, childEndX, level + 1, positions);
+        currentX = childEndX;
+      });
+
+      // Center parent above its children
+      const firstChildPos = positions.get(node.children[0].id);
+      const lastChildPos = positions.get(node.children[node.children.length - 1].id);
+      if (firstChildPos && lastChildPos) {
+        positions.set(node.id, { x: (firstChildPos.x + lastChildPos.x) / 2, y });
+      }
+    }
+  };
+
+  // Get all node positions
+  const nodePositions = useMemo(() => {
+    const positions = new Map<string, { x: number; y: number }>();
+    if (root) {
+      calculateNodePositions(root, 50, 750, 0, positions);
+    }
+    return positions;
+  }, [root]);
+
   // Render tree recursively
-  const renderTree = (node: BPlusNode | null, level: number, position: number, totalWidth: number) => {
+  const renderTree = (node: BPlusNode | null) => {
     if (!node) return null;
 
     const nodeWidth = 100;
     const isHighlighted = highlightPath.includes(node.id);
-    const depth = getTreeDepth(root);
-    const y = level * 80 + 20;
+    const pos = nodePositions.get(node.id);
+    if (!pos) return null;
+
+    const { x: position, y } = pos;
 
     return (
       <g key={node.id}>
@@ -258,9 +308,9 @@ export default function BPlusTree() {
         </motion.g>
 
         {/* Children */}
-        {!node.isLeaf && node.children.map((child, i) => {
-          const childSpacing = totalWidth / Math.pow(2, level + 1);
-          const childPosition = position - (totalWidth / Math.pow(2, level + 1)) * (node.children.length - 1) / 2 + i * childSpacing;
+        {!node.isLeaf && node.children.map((child) => {
+          const childPos = nodePositions.get(child.id);
+          if (!childPos) return null;
 
           return (
             <g key={child.id}>
@@ -268,12 +318,12 @@ export default function BPlusTree() {
               <line
                 x1={position}
                 y1={y + 35}
-                x2={childPosition}
-                y2={(level + 1) * 80 + 20}
+                x2={childPos.x}
+                y2={childPos.y}
                 stroke={highlightPath.includes(child.id) ? '#6366f1' : 'var(--svg-stroke-strong)'}
                 strokeWidth={highlightPath.includes(child.id) ? 2 : 1}
               />
-              {renderTree(child, level + 1, childPosition, totalWidth / 2)}
+              {renderTree(child)}
             </g>
           );
         })}
@@ -353,7 +403,7 @@ export default function BPlusTree() {
             </defs>
 
             {root ? (
-              renderTree(root, 0, 400, 700)
+              renderTree(root)
             ) : (
               <text x="400" y="150" textAnchor="middle" fill="var(--svg-fill-muted)" fontSize="14">
                 Insert keys to build the tree
