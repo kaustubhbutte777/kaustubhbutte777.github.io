@@ -193,7 +193,7 @@ export default function TwoPhaseCommit() {
       case 'vote-no': return '#ef4444';
       case 'commit': return '#10b981';
       case 'abort': return '#ef4444';
-      case 'ack': return '#6366f1';
+      case 'ack': return '#525252';
     }
   };
 
@@ -411,7 +411,7 @@ export default function TwoPhaseCommit() {
           <li><span className="text-yellow-400">Phase 1 (Prepare)</span>: Coordinator asks all participants to prepare</li>
           <li><span className="text-green-400">Vote Yes</span>: Participant can commit, locks resources</li>
           <li><span className="text-red-400">Vote No</span>: Participant cannot commit, transaction aborts</li>
-          <li><span className="text-indigo-400">Phase 2</span>: Coordinator sends COMMIT (all yes) or ABORT (any no)</li>
+          <li><span className="text-zinc-500">Phase 2</span>: Coordinator sends COMMIT (all yes) or ABORT (any no)</li>
         </ul>
       </div>
     </div>

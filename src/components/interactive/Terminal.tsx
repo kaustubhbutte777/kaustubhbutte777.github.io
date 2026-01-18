@@ -191,7 +191,7 @@ export default function Terminal() {
       </div>
 
       <p className="text-center text-[var(--text-muted)] text-sm mt-4">
-        Try typing <code className="text-indigo-400">help</code> to get started
+        Try typing <code className="text-zinc-500">help</code> to get started
       </p>
     </motion.div>
   );

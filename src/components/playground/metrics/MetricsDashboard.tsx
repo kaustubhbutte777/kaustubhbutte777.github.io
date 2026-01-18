@@ -212,7 +212,7 @@ export default function MetricsDashboard() {
               <Area
                 type="monotone"
                 dataKey="throughput"
-                stroke="#6366f1"
+                stroke="#525252"
                 fill="rgba(99, 102, 241, 0.2)"
                 strokeWidth={2}
               />
@@ -252,7 +252,7 @@ export default function MetricsDashboard() {
         <h3 className="font-medium text-[var(--text-primary)] mb-2">Dashboard Features:</h3>
         <ul className="list-disc list-inside space-y-1">
           <li><span className="text-green-400">Latency percentiles</span> show P50, P95, P99 with SLO threshold</li>
-          <li><span className="text-indigo-400">Circuit breaker</span> automatically opens when error rate exceeds 10%</li>
+          <li><span className="text-zinc-500">Circuit breaker</span> automatically opens when error rate exceeds 10%</li>
           <li>Click <span className="text-red-400">"Simulate Incident"</span> to see degradation patterns</li>
           <li>Real-world dashboards use tools like Grafana, Datadog, or Prometheus</li>
         </ul>

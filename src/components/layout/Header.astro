@@ -32,7 +32,7 @@ const currentPath = Astro.url.pathname;
           >
             {link.label}
             {currentPath === link.href && (
-              <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></span>
+              <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-zinc-700 to-zinc-600 rounded-full"></span>
             )}
           </a>
         </li>
@@ -99,7 +99,7 @@ const currentPath = Astro.url.pathname;
               class:list={[
                 "block py-2 px-4 rounded-lg transition-colors",
                 currentPath === link.href
-                  ? "bg-indigo-500/20 text-[var(--text-primary)]"
+                  ? "bg-zinc-700/20 text-[var(--text-primary)]"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg)]"
               ]}
             >

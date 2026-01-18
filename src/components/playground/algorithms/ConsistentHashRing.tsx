@@ -15,7 +15,7 @@ interface DataKey {
 }
 
 const COLORS = [
-  '#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'
+  '#525252', '#6b6b6b', '#737373', '#10b981', '#f59e0b', '#ef4444'
 ];
 
 const hashString = (str: string): number => {
@@ -153,7 +153,7 @@ export default function ConsistentHashRing() {
         </button>
         <button
           onClick={() => setShowVirtualNodes(!showVirtualNodes)}
-          className={`btn-glass text-sm ${showVirtualNodes ? 'border-indigo-500' : ''}`}
+          className={`btn-glass text-sm ${showVirtualNodes ? 'border-zinc-600' : ''}`}
         >
           {showVirtualNodes ? 'Hide' : 'Show'} Virtual Nodes
         </button>
@@ -334,7 +334,7 @@ export default function ConsistentHashRing() {
         <ul className="list-disc list-inside space-y-1">
           <li>Nodes are placed on a hash ring (0° - 360°)</li>
           <li>Each key is hashed and assigned to the next node clockwise</li>
-          <li><span className="text-indigo-400">Virtual nodes</span> improve distribution and reduce hotspots</li>
+          <li><span className="text-zinc-500">Virtual nodes</span> improve distribution and reduce hotspots</li>
           <li>When a node is added/removed, only keys in that segment are affected</li>
         </ul>
       </div>

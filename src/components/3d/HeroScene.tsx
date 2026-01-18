@@ -68,7 +68,7 @@ function ParticleField() {
       </bufferGeometry>
       <pointsMaterial
         size={0.05}
-        color="#6366f1"
+        color="#525252"
         transparent
         opacity={0.8}
         sizeAttenuation
@@ -81,14 +81,14 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#6366f1" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
+      <pointLight position={[10, 10, 10]} intensity={1} color="#525252" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#6b6b6b" />
 
-      <FloatingShape position={[-3, 1, -2]} color="#6366f1" scale={0.8} />
-      <FloatingShape position={[3, -1, -3]} color="#8b5cf6" scale={1.2} />
-      <FloatingShape position={[0, 2, -4]} color="#06b6d4" scale={0.6} />
-      <FloatingShape position={[-2, -2, -5]} color="#6366f1" scale={0.5} />
-      <FloatingShape position={[4, 0, -2]} color="#8b5cf6" scale={0.7} />
+      <FloatingShape position={[-3, 1, -2]} color="#525252" scale={0.8} />
+      <FloatingShape position={[3, -1, -3]} color="#6b6b6b" scale={1.2} />
+      <FloatingShape position={[0, 2, -4]} color="#737373" scale={0.6} />
+      <FloatingShape position={[-2, -2, -5]} color="#525252" scale={0.5} />
+      <FloatingShape position={[4, 0, -2]} color="#6b6b6b" scale={0.7} />
 
       <ParticleField />
       <Stars

@@ -331,7 +331,7 @@ export default function RaftConsensus() {
                       key={msg.id}
                       r="2"
                       fill={msg.type === 'heartbeat' ? '#10b981' :
-                            msg.type === 'vote-request' ? '#f59e0b' : '#6366f1'}
+                            msg.type === 'vote-request' ? '#f59e0b' : '#525252'}
                       initial={{ cx: from.x, cy: from.y, opacity: 1 }}
                       animate={{ cx: to.x, cy: to.y, opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -437,7 +437,7 @@ export default function RaftConsensus() {
         <ul className="list-disc list-inside space-y-1">
           <li><span className="text-yellow-400">Leader Election</span>: Followers timeout and become candidates, requesting votes</li>
           <li><span className="text-green-400">Log Replication</span>: Leader appends entries and replicates to followers</li>
-          <li><span className="text-indigo-400">Commit</span>: Entries are committed once replicated to a majority</li>
+          <li><span className="text-zinc-500">Commit</span>: Entries are committed once replicated to a majority</li>
           <li><span className="text-red-400">Failure Recovery</span>: New election triggered when leader fails</li>
         </ul>
       </div>

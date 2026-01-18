@@ -27,11 +27,11 @@ interface NodeData {
 
 const nodeColors: Record<NodeData['type'], string> = {
   client: '#10b981',
-  gateway: '#6366f1',
-  service: '#8b5cf6',
+  gateway: '#525252',
+  service: '#6b6b6b',
   database: '#f59e0b',
   cache: '#ef4444',
-  queue: '#06b6d4',
+  queue: '#737373',
   external: '#ec4899',
 };
 
@@ -307,17 +307,17 @@ const initialEdges: Edge[] = [
   { id: 'e2', source: 'driver-app', target: 'api-gateway', animated: true, style: { stroke: '#10b981' } },
 
   // Gateway to Services
-  { id: 'e3', source: 'api-gateway', target: 'ride-service', animated: true, style: { stroke: '#6366f1' } },
-  { id: 'e4', source: 'api-gateway', target: 'dispatch-service', animated: true, style: { stroke: '#6366f1' } },
-  { id: 'e5', source: 'api-gateway', target: 'pricing-service', animated: true, style: { stroke: '#6366f1' } },
+  { id: 'e3', source: 'api-gateway', target: 'ride-service', animated: true, style: { stroke: '#525252' } },
+  { id: 'e4', source: 'api-gateway', target: 'dispatch-service', animated: true, style: { stroke: '#525252' } },
+  { id: 'e5', source: 'api-gateway', target: 'pricing-service', animated: true, style: { stroke: '#525252' } },
 
   // Service interconnections
-  { id: 'e6', source: 'ride-service', target: 'dispatch-service', style: { stroke: '#8b5cf6' } },
-  { id: 'e7', source: 'dispatch-service', target: 'pricing-service', style: { stroke: '#8b5cf6' } },
-  { id: 'e8', source: 'ride-service', target: 'location-service', style: { stroke: '#8b5cf6' } },
-  { id: 'e9', source: 'dispatch-service', target: 'location-service', style: { stroke: '#8b5cf6' } },
-  { id: 'e10', source: 'ride-service', target: 'kafka', style: { stroke: '#06b6d4' } },
-  { id: 'e11', source: 'kafka', target: 'payment-service', animated: true, style: { stroke: '#06b6d4' } },
+  { id: 'e6', source: 'ride-service', target: 'dispatch-service', style: { stroke: '#6b6b6b' } },
+  { id: 'e7', source: 'dispatch-service', target: 'pricing-service', style: { stroke: '#6b6b6b' } },
+  { id: 'e8', source: 'ride-service', target: 'location-service', style: { stroke: '#6b6b6b' } },
+  { id: 'e9', source: 'dispatch-service', target: 'location-service', style: { stroke: '#6b6b6b' } },
+  { id: 'e10', source: 'ride-service', target: 'kafka', style: { stroke: '#737373' } },
+  { id: 'e11', source: 'kafka', target: 'payment-service', animated: true, style: { stroke: '#737373' } },
 
   // Cache connections
   { id: 'e12', source: 'dispatch-service', target: 'redis', style: { stroke: '#ef4444' } },
@@ -536,9 +536,9 @@ export default function SystemDesignVisualizer() {
           <div className="glass p-4 rounded-xl">
             <h3 className="text-sm font-medium text-[var(--text-primary)] mb-2">Architecture Highlights</h3>
             <ul className="text-xs text-[var(--text-secondary)] space-y-1">
-              <li>• <span className="text-cyan-400">Kafka</span> for async event processing</li>
+              <li>• <span className="text-zinc-400">Kafka</span> for async event processing</li>
               <li>• <span className="text-red-400">Redis</span> for low-latency location data</li>
-              <li>• <span className="text-purple-400">Microservices</span> enable independent scaling</li>
+              <li>• <span className="text-zinc-500">Microservices</span> enable independent scaling</li>
               <li>• <span className="text-yellow-400">PostgreSQL</span> per domain (rides, users, payments)</li>
             </ul>
           </div>

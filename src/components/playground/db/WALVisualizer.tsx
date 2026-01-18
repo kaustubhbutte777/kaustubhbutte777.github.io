@@ -259,11 +259,11 @@ export default function WALVisualizer() {
 
   const getEntryColor = (type: LogEntry['type']) => {
     switch (type) {
-      case 'BEGIN': return '#6366f1';
+      case 'BEGIN': return '#525252';
       case 'WRITE': return '#f59e0b';
       case 'COMMIT': return '#10b981';
       case 'ABORT': return '#ef4444';
-      case 'CHECKPOINT': return '#06b6d4';
+      case 'CHECKPOINT': return '#737373';
     }
   };
 
@@ -302,7 +302,7 @@ export default function WALVisualizer() {
             <div className="flex items-center gap-2 mb-3">
               <h3 className="text-sm font-medium text-[var(--text-primary)]">Write-Ahead Log (Disk)</h3>
               {checkpointLsn && (
-                <span className="text-xs px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">
+                <span className="text-xs px-2 py-0.5 rounded bg-zinc-500/20 text-zinc-400">
                   Checkpoint @ LSN {checkpointLsn}
                 </span>
               )}
@@ -441,8 +441,8 @@ export default function WALVisualizer() {
       <div className="glass p-4 rounded-xl text-sm text-[var(--text-secondary)]">
         <h3 className="font-medium text-[var(--text-primary)] mb-2">How WAL Works:</h3>
         <ul className="list-disc list-inside space-y-1">
-          <li><span className="text-indigo-400">Write-Ahead</span>: Log changes BEFORE modifying data pages</li>
-          <li><span className="text-cyan-400">Checkpoint</span>: Flush dirty pages to disk, mark recovery point</li>
+          <li><span className="text-zinc-500">Write-Ahead</span>: Log changes BEFORE modifying data pages</li>
+          <li><span className="text-zinc-400">Checkpoint</span>: Flush dirty pages to disk, mark recovery point</li>
           <li><span className="text-green-400">REDO</span>: Replay committed transactions after crash</li>
           <li><span className="text-yellow-400">UNDO</span>: Rollback uncommitted transactions</li>
           <li>Ensures <span className="text-[var(--text-primary)]">ACID durability</span> even after crashes</li>

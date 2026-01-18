@@ -51,19 +51,19 @@ const projects = [
       <div class="grid md:grid-cols-2 gap-6">
         {projects.map((project, index) => (
           <GlassCard client:visible className="group overflow-hidden">
-            <div class="aspect-video bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg mb-4 flex items-center justify-center">
+            <div class="aspect-video bg-gradient-to-br from-zinc-700/20 to-zinc-600/20 rounded-lg mb-4 flex items-center justify-center">
               <span class="text-6xl opacity-50">🚀</span>
             </div>
 
             <div class="flex flex-wrap gap-2 mb-3">
               {project.tags.map((tag) => (
-                <span class="px-2 py-1 text-xs rounded-full bg-indigo-500/20 text-indigo-400">
+                <span class="px-2 py-1 text-xs rounded-full bg-zinc-700/20 text-zinc-600">
                   {tag}
                 </span>
               ))}
             </div>
 
-            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2 group-hover:text-indigo-400 transition-colors">
+            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2 group-hover:text-zinc-600 transition-colors">
               {project.title}
             </h3>
 

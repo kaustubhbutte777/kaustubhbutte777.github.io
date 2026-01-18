@@ -154,7 +154,7 @@ export default function SnakeGame() {
             Score: <span className="text-[var(--text-primary)] font-bold">{score}</span>
           </div>
           <div className="text-[var(--text-secondary)]">
-            High Score: <span className="text-indigo-400 font-bold">{highScore}</span>
+            High Score: <span className="text-zinc-500 font-bold">{highScore}</span>
           </div>
         </div>
 
@@ -171,7 +171,7 @@ export default function SnakeGame() {
             <div
               key={index}
               className={`absolute rounded-sm ${
-                index === 0 ? 'bg-indigo-400' : 'bg-indigo-600'
+                index === 0 ? 'bg-zinc-500' : 'bg-zinc-700'
               }`}
               style={{
                 left: segment.x * CELL_SIZE,

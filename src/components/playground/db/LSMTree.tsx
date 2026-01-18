@@ -353,7 +353,7 @@ export default function LSMTree() {
                           className="px-3 py-2 rounded border bg-gray-800/50"
                           style={{
                             borderColor: highlightedSSTable === table.id
-                              ? '#6366f1'
+                              ? '#525252'
                               : `hsla(${200 + level * 30}, 70%, 50%, 0.5)`
                           }}
                         >
@@ -421,9 +421,9 @@ export default function LSMTree() {
         <h3 className="font-medium text-[var(--text-primary)] mb-2">How LSM Trees Work:</h3>
         <ul className="list-disc list-inside space-y-1">
           <li><span className="text-green-400">MemTable</span>: In-memory sorted structure for recent writes</li>
-          <li><span className="text-cyan-400">Flush</span>: When MemTable is full, it's written to disk as an SSTable</li>
+          <li><span className="text-zinc-400">Flush</span>: When MemTable is full, it's written to disk as an SSTable</li>
           <li><span className="text-yellow-400">Compaction</span>: Merge SSTables to reduce space and improve reads</li>
-          <li><span className="text-indigo-400">Leveled</span>: Lower levels have fewer, smaller tables for faster reads</li>
+          <li><span className="text-zinc-500">Leveled</span>: Lower levels have fewer, smaller tables for faster reads</li>
           <li>Optimized for write-heavy workloads (append-only)</li>
         </ul>
       </div>

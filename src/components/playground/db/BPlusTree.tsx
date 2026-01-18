@@ -281,7 +281,7 @@ export default function BPlusTree() {
           animate={{
             opacity: 1,
             scale: 1,
-            filter: isHighlighted ? 'drop-shadow(0 0 10px #6366f1)' : 'none'
+            filter: isHighlighted ? 'drop-shadow(0 0 10px #525252)' : 'none'
           }}
           transition={{ duration: 0.3 }}
         >
@@ -292,7 +292,7 @@ export default function BPlusTree() {
             height={35}
             rx="6"
             fill={node.isLeaf ? 'rgba(16, 185, 129, 0.2)' : 'rgba(99, 102, 241, 0.2)'}
-            stroke={isHighlighted ? '#6366f1' : node.isLeaf ? '#10b981' : '#6366f1'}
+            stroke={isHighlighted ? '#525252' : node.isLeaf ? '#10b981' : '#525252'}
             strokeWidth={isHighlighted ? 2 : 1}
           />
 
@@ -348,7 +348,7 @@ export default function BPlusTree() {
                 y1={y + 35}
                 x2={childPos.x}
                 y2={childPos.y}
-                stroke={highlightPath.includes(child.id) ? '#6366f1' : 'var(--svg-stroke-strong)'}
+                stroke={highlightPath.includes(child.id) ? '#525252' : 'var(--svg-stroke-strong)'}
                 strokeWidth={highlightPath.includes(child.id) ? 2 : 1}
               />
               {renderTree(child)}
@@ -467,7 +467,7 @@ export default function BPlusTree() {
             <h3 className="text-sm font-medium text-[var(--text-primary)] mb-3">Legend</h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border border-indigo-500 bg-indigo-500/20" />
+                <div className="w-4 h-4 rounded border border-zinc-600 bg-zinc-600/20" />
                 <span className="text-[var(--text-secondary)]">Internal Node</span>
               </div>
               <div className="flex items-center gap-2">
@@ -500,7 +500,7 @@ export default function BPlusTree() {
       <div className="glass p-4 rounded-xl text-sm text-[var(--text-secondary)]">
         <h3 className="font-medium text-[var(--text-primary)] mb-2">How B+ Trees Work:</h3>
         <ul className="list-disc list-inside space-y-1">
-          <li><span className="text-indigo-400">Internal nodes</span> store keys and pointers to children</li>
+          <li><span className="text-zinc-500">Internal nodes</span> store keys and pointers to children</li>
           <li><span className="text-green-400">Leaf nodes</span> store actual data and are linked for range queries</li>
           <li>All leaves are at the same depth (balanced)</li>
           <li>When a node overflows, it splits and promotes a key to parent</li>
