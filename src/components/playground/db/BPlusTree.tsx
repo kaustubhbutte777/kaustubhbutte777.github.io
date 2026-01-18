@@ -235,14 +235,32 @@ export default function BPlusTree() {
     }
   };
 
+  // Calculate dynamic dimensions based on tree structure
+  const treeDimensions = useMemo(() => {
+    if (!root) return { width: 800, height: 400 };
+
+    const leafCount = countLeaves(root);
+    const depth = getTreeDepth(root);
+
+    // Minimum 120px per leaf node to prevent overlap
+    const minLeafSpacing = 120;
+    const width = Math.max(800, leafCount * minLeafSpacing + 100);
+
+    // 80px per level + padding
+    const height = Math.max(400, depth * 80 + 100);
+
+    return { width, height };
+  }, [root]);
+
   // Get all node positions
   const nodePositions = useMemo(() => {
     const positions = new Map<string, { x: number; y: number }>();
     if (root) {
-      calculateNodePositions(root, 50, 750, 0, positions);
+      const padding = 50;
+      calculateNodePositions(root, padding, treeDimensions.width - padding, 0, positions);
     }
     return positions;
-  }, [root]);
+  }, [root, treeDimensions.width]);
 
   // Render tree recursively
   const renderTree = (node: BPlusNode | null) => {
@@ -396,9 +414,13 @@ export default function BPlusTree() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Tree Visualization */}
-        <div className="lg:col-span-2 glass-strong p-6 rounded-2xl overflow-x-auto overflow-y-hidden">
-          <div className="min-w-[800px]">
-          <svg viewBox="0 0 800 400" className="w-full" style={{ minHeight: 350 }}>
+        <div className="lg:col-span-2 glass-strong p-6 rounded-2xl overflow-x-auto overflow-y-auto" style={{ maxHeight: 500 }}>
+          <div style={{ minWidth: treeDimensions.width }}>
+          <svg
+            viewBox={`0 0 ${treeDimensions.width} ${treeDimensions.height}`}
+            className="w-full"
+            style={{ minHeight: Math.min(treeDimensions.height, 450) }}
+          >
             <defs>
               <marker
                 id="arrowhead"
@@ -415,7 +437,7 @@ export default function BPlusTree() {
             {root ? (
               renderTree(root)
             ) : (
-              <text x="400" y="150" textAnchor="middle" fill="var(--svg-fill-muted)" fontSize="14">
+              <text x={treeDimensions.width / 2} y="150" textAnchor="middle" fill="var(--svg-fill-muted)" fontSize="14">
                 Insert keys to build the tree
               </text>
             )}
