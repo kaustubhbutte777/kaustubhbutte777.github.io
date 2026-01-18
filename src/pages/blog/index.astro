@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GlassCard from '../../components/ui/GlassCard';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Blog | Portfolio" description="Technical articles and thoughts on software engineering">
+  <section class="py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text-animated">Blog</span>
+        </h1>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+          Thoughts, tutorials, and deep dives into software engineering
+        </p>
+      </div>
+
+      {sortedPosts.length === 0 ? (
+        <div class="text-center py-20">
+          <div class="glass-strong inline-block p-8 rounded-2xl">
+            <div class="text-6xl mb-4">📝</div>
+            <h2 class="text-xl font-semibold text-white mb-2">Coming Soon</h2>
+            <p class="text-gray-400">
+              Blog posts are being written. Check back soon!
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div class="space-y-6">
+          {sortedPosts.map((post) => (
+            <a href={`/blog/${post.slug}`} class="group block">
+              <GlassCard client:visible className="hover:border-indigo-500/50 transition-colors">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                      {post.data.tags?.slice(0, 2).map((tag: string) => (
+                        <span class="px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400">
+                          {tag}
+                        </span>
+                      ))}
+                      <span>{post.data.readTime || '5 min read'}</span>
+                    </div>
+                    <h2 class="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-gray-400 line-clamp-2">
+                      {post.data.description}
+                    </p>
+                  </div>
+                  <div class="text-gray-500 text-sm md:text-right">
+                    {new Date(post.data.date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </div>
+                </div>
+              </GlassCard>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

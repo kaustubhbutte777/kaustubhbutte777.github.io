@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GlassCard from '../../components/ui/GlassCard';
+
+const demos = [
+  {
+    title: "Buffer Pool LRU",
+    description: "Interactive visualization of InnoDB's buffer pool management with hot/cold page sublists",
+    href: "/playground/buffer-pool",
+    icon: "🗄️",
+    category: "Database",
+    tags: ["MySQL", "InnoDB", "Memory Management"]
+  },
+  {
+    title: "B+ Tree",
+    description: "Self-balancing tree structure used in database indexes with insert, search, and node splitting",
+    href: "/playground/bplus-tree",
+    icon: "🌳",
+    category: "Database",
+    tags: ["Indexing", "B-Tree", "Storage Engine"]
+  },
+  {
+    title: "LSM Tree",
+    description: "Log-Structured Merge Tree with MemTable, SSTable flush, and compaction visualization",
+    href: "/playground/lsm-tree",
+    icon: "📚",
+    category: "Database",
+    tags: ["RocksDB", "LevelDB", "Write-Optimized"]
+  },
+  {
+    title: "Write-Ahead Log",
+    description: "WAL for crash recovery with REDO/UNDO phases, checkpoints, and transaction management",
+    href: "/playground/wal",
+    icon: "📝",
+    category: "Database",
+    tags: ["Durability", "ACID", "Recovery"]
+  },
+  {
+    title: "Consistent Hashing",
+    description: "Visualize how consistent hashing distributes data across nodes with virtual nodes",
+    href: "/playground/consistent-hashing",
+    icon: "🔄",
+    category: "Algorithms",
+    tags: ["Distributed Systems", "Load Balancing", "Sharding"]
+  },
+  {
+    title: "Raft Consensus",
+    description: "Leader election and log replication in distributed systems with failure simulation",
+    href: "/playground/raft",
+    icon: "🗳️",
+    category: "Algorithms",
+    tags: ["Consensus", "Distributed Systems", "Fault Tolerance"]
+  },
+  {
+    title: "Two-Phase Commit",
+    description: "Atomic commit protocol for distributed transactions with prepare/commit phases",
+    href: "/playground/two-phase-commit",
+    icon: "🤝",
+    category: "Algorithms",
+    tags: ["Transactions", "ACID", "Coordination"]
+  },
+  {
+    title: "Metrics Dashboard",
+    description: "Simulated real-time observability dashboard with latency percentiles and circuit breakers",
+    href: "/playground/metrics",
+    icon: "📊",
+    category: "Observability",
+    tags: ["Monitoring", "SRE", "Alerting"]
+  },
+  {
+    title: "System Design",
+    description: "Interactive Uber-style architecture with animated data flow and failure scenarios",
+    href: "/playground/system-design",
+    icon: "🏗️",
+    category: "Architecture",
+    tags: ["Microservices", "Scalability", "Design"]
+  },
+];
+
+const categories = [...new Set(demos.map(d => d.category))];
+---
+
+<BaseLayout title="Playground | Kaustubh Butte" description="Interactive distributed systems visualizations and demos">
+  <section class="py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text-animated">Playground</span>
+        </h1>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+          Interactive visualizations demonstrating distributed systems concepts,
+          database internals, and system design patterns.
+        </p>
+      </div>
+
+      <!-- Category Pills -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8">
+        {categories.map((cat) => (
+          <span class="px-4 py-2 rounded-full glass text-sm text-gray-300">
+            {cat}
+          </span>
+        ))}
+      </div>
+
+      <!-- Demo Grid -->
+      <div class="grid md:grid-cols-2 gap-6">
+        {demos.map((demo) => (
+          <a href={demo.href} class="group block">
+            <GlassCard client:visible className="h-full hover:border-indigo-500/50 transition-all duration-300">
+              <div class="flex items-start gap-4">
+                <div class="text-4xl">{demo.icon}</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="px-2 py-1 text-xs rounded-full bg-indigo-500/20 text-indigo-400">
+                      {demo.category}
+                    </span>
+                  </div>
+                  <h2 class="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
+                    {demo.title}
+                  </h2>
+                  <p class="text-gray-400 text-sm mb-4">
+                    {demo.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {demo.tags.map((tag) => (
+                      <span class="px-2 py-1 text-xs rounded bg-white/5 text-gray-500">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </GlassCard>
+          </a>
+        ))}
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>

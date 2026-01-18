@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero';
+import GlassCard from '../components/ui/GlassCard';
+---
+
+<BaseLayout title="Home | Portfolio">
+  <Hero client:load />
+
+  <!-- Featured Section -->
+  <section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">
+        <span class="gradient-text">What I Do</span>
+      </h2>
+      <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+        Building scalable systems and crafting beautiful experiences
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <GlassCard client:visible>
+          <div class="text-4xl mb-4">🚀</div>
+          <h3 class="text-xl font-semibold text-white mb-2">Backend Systems</h3>
+          <p class="text-gray-400">
+            Designing and building high-performance, distributed systems that scale.
+          </p>
+        </GlassCard>
+
+        <GlassCard client:visible>
+          <div class="text-4xl mb-4">🛠️</div>
+          <h3 class="text-xl font-semibold text-white mb-2">Side Projects</h3>
+          <p class="text-gray-400">
+            Building fun experiments and tools to explore new technologies.
+          </p>
+        </GlassCard>
+
+        <GlassCard client:visible>
+          <div class="text-4xl mb-4">📚</div>
+          <h3 class="text-xl font-semibold text-white mb-2">Technical Writing</h3>
+          <p class="text-gray-400">
+            Sharing knowledge through detailed blog posts and documentation.
+          </p>
+        </GlassCard>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Posts Preview -->
+  <section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-12">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold">
+            <span class="gradient-text">Recent Posts</span>
+          </h2>
+          <p class="text-gray-400 mt-2">Thoughts, learnings, and discoveries</p>
+        </div>
+        <a href="/blog" class="btn-glass hidden md:inline-flex items-center gap-2">
+          View All
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <a href="/blog" class="group">
+          <GlassCard client:visible className="h-full">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+              <span class="px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-400">Tutorial</span>
+              <span>5 min read</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
+              Getting Started with Distributed Systems
+            </h3>
+            <p class="text-gray-400">
+              An introduction to building scalable distributed systems from scratch.
+            </p>
+          </GlassCard>
+        </a>
+
+        <a href="/blog" class="group">
+          <GlassCard client:visible className="h-full">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+              <span class="px-2 py-1 rounded-full bg-purple-500/20 text-purple-400">Deep Dive</span>
+              <span>8 min read</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
+              Understanding Database Internals
+            </h3>
+            <p class="text-gray-400">
+              A deep dive into how modern databases work under the hood.
+            </p>
+          </GlassCard>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
