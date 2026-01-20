@@ -2,26 +2,28 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero';
 import GlowCard from '../components/ui/GlowCard';
-import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimation';
+import ScrollReveal from '../components/ui/ScrollReveal';
+import FlowingGradient from '../components/ui/FlowingGradient';
 ---
 
 <BaseLayout title="Home | Kaustubh Butte">
+  <FlowingGradient client:load />
   <Hero client:load />
 
   <!-- Featured Section -->
   <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
-      <ScrollAnimation client:visible animation="fadeUp">
+      <ScrollReveal client:visible animation="fadeUp">
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">
           <span class="gradient-text">What I Do</span>
         </h2>
         <p class="text-[var(--text-secondary)] text-center mb-16 max-w-2xl mx-auto">
           Building scalable systems and crafting beautiful experiences
         </p>
-      </ScrollAnimation>
+      </ScrollReveal>
 
       <div class="grid md:grid-cols-3 gap-8">
-        <ScrollAnimation client:visible animation="fadeUp" delay={0}>
+        <ScrollReveal client:visible animation="fadeUp" delay={0}>
           <GlowCard client:visible className="h-full" intensity="medium">
             <div class="w-12 h-12 rounded-xl bg-zinc-500/10 flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,9 +35,9 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
               Designing and building high-performance, distributed systems that scale to millions of users.
             </p>
           </GlowCard>
-        </ScrollAnimation>
+        </ScrollReveal>
 
-        <ScrollAnimation client:visible animation="fadeUp" delay={0.1}>
+        <ScrollReveal client:visible animation="fadeUp" delay={0.1}>
           <GlowCard client:visible className="h-full" intensity="medium">
             <div class="w-12 h-12 rounded-xl bg-zinc-500/10 flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,9 +49,9 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
               Building fun experiments and tools to explore new technologies and solve interesting problems.
             </p>
           </GlowCard>
-        </ScrollAnimation>
+        </ScrollReveal>
 
-        <ScrollAnimation client:visible animation="fadeUp" delay={0.2}>
+        <ScrollReveal client:visible animation="fadeUp" delay={0.2}>
           <GlowCard client:visible className="h-full" intensity="medium">
             <div class="w-12 h-12 rounded-xl bg-zinc-500/10 flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +63,7 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
               Sharing knowledge through detailed blog posts, documentation, and open source contributions.
             </p>
           </GlowCard>
-        </ScrollAnimation>
+        </ScrollReveal>
       </div>
     </div>
   </section>
@@ -69,7 +71,7 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
   <!-- Recent Posts Preview -->
   <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
-      <ScrollAnimation client:visible animation="fadeUp">
+      <ScrollReveal client:visible animation="fadeUp">
         <div class="flex items-center justify-between mb-12">
           <div>
             <h2 class="text-3xl md:text-4xl font-bold">
@@ -84,10 +86,10 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
             </svg>
           </a>
         </div>
-      </ScrollAnimation>
+      </ScrollReveal>
 
       <div class="grid md:grid-cols-2 gap-8">
-        <ScrollAnimation client:visible animation="fadeUp" delay={0}>
+        <ScrollReveal client:visible animation="fadeUp" delay={0}>
           <a href="/blog" class="group block h-full">
             <GlowCard client:visible className="h-full" intensity="subtle">
               <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
@@ -102,9 +104,9 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
               </p>
             </GlowCard>
           </a>
-        </ScrollAnimation>
+        </ScrollReveal>
 
-        <ScrollAnimation client:visible animation="fadeUp" delay={0.1}>
+        <ScrollReveal client:visible animation="fadeUp" delay={0.1}>
           <a href="/blog" class="group block h-full">
             <GlowCard client:visible className="h-full" intensity="subtle">
               <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
@@ -119,7 +121,7 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
               </p>
             </GlowCard>
           </a>
-        </ScrollAnimation>
+        </ScrollReveal>
       </div>
     </div>
   </section>
@@ -127,7 +129,7 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
   <!-- Playground Preview -->
   <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
-      <ScrollAnimation client:visible animation="fadeUp">
+      <ScrollReveal client:visible animation="fadeUp">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold mb-4">
             <span class="gradient-text">Interactive Playground</span>
@@ -136,9 +138,9 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
             Explore interactive visualizations of distributed systems concepts, database internals, and algorithms.
           </p>
         </div>
-      </ScrollAnimation>
+      </ScrollReveal>
 
-      <ScrollAnimation client:visible animation="scaleIn">
+      <ScrollReveal client:visible animation="scaleIn">
         <a href="/playground" class="group block">
           <div class="relative glass-strong rounded-3xl p-8 md:p-12 overflow-hidden glow-hover">
             <div class="absolute inset-0 bg-gradient-to-br from-zinc-500/5 via-transparent to-zinc-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -168,7 +170,7 @@ import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimat
             </div>
           </div>
         </a>
-      </ScrollAnimation>
+      </ScrollReveal>
     </div>
   </section>
 </BaseLayout>
