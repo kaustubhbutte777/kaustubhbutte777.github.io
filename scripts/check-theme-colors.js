@@ -57,6 +57,7 @@ const EXTENSIONS = ['.tsx', '.jsx', '.astro', '.ts', '.js'];
 const IGNORE_FILES = [
   'ThemeToggle.tsx', // Theme toggle intentionally uses specific colors
   'MetricsDashboard.tsx', // Recharts doesn't support CSS variables - needs React theme context
+  'EytzingerLayout.tsx', // Uses text-white on colored backgrounds for status indicators
 ];
 
 function getAllFiles(dir, files = []) {

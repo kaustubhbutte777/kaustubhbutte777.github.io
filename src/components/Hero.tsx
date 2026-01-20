@@ -58,27 +58,6 @@ export default function Hero() {
           </GlowButton>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="mt-16 flex items-center justify-center gap-8 text-[var(--text-muted)]"
-        >
-          <div className="text-center">
-            <div className="text-3xl font-bold gradient-text">6+</div>
-            <div className="text-sm">Years Experience</div>
-          </div>
-          <div className="w-px h-12 bg-[var(--divider)]"></div>
-          <div className="text-center">
-            <div className="text-3xl font-bold gradient-text">Java</div>
-            <div className="text-sm">& Go</div>
-          </div>
-          <div className="w-px h-12 bg-[var(--divider)]"></div>
-          <div className="text-center">
-            <div className="text-3xl font-bold gradient-text">Uber</div>
-            <div className="text-sm">Current</div>
-          </div>
-        </motion.div>
       </div>
 
       {/* Scroll indicator */}

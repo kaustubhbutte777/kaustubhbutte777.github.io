@@ -15,6 +15,7 @@
   --text-secondary: #3f3f46;
   --text-muted: #71717a;
   --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(0, 0, 0, 0.08);
   --glass-bg-strong: rgba(255, 255, 255, 0.9);
   --glass-border-strong: rgba(0, 0, 0, 0.12);
@@ -42,6 +43,7 @@
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
   --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-hover: rgba(255, 255, 255, 0.06);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-bg-strong: rgba(255, 255, 255, 0.06);
   --glass-border-strong: rgba(255, 255, 255, 0.12);

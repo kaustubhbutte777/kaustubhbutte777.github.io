@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EytzingerLayout from '../../components/playground/algorithms/EytzingerLayout';
+---
+
+<BaseLayout title="Eytzinger Layout | Playground" description="Interactive visualization of cache-optimized Eytzinger binary search layout">
+  <section class="py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-8">
+        <a href="/playground" class="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors text-sm">
+          &larr; Back to Playground
+        </a>
+      </div>
+
+      <div class="text-center mb-12">
+        <span class="px-3 py-1 text-xs rounded-full bg-zinc-700/20 text-zinc-600 mb-4 inline-block">
+          Algorithms
+        </span>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text-animated">Eytzinger Layout</span>
+        </h1>
+        <p class="text-[var(--text-secondary)] text-lg max-w-2xl mx-auto">
+          A cache-optimized array layout for binary search that arranges elements
+          in breadth-first order for better memory access patterns.
+        </p>
+      </div>
+
+      <EytzingerLayout client:load />
+
+      <div class="mt-12 glass rounded-xl p-6">
+        <h2 class="text-xl font-semibold text-[var(--text-primary)] mb-4">Learn More</h2>
+        <ul class="text-[var(--text-secondary)] space-y-2">
+          <li>
+            <a href="https://algorithmica.org/en/eytzinger" target="_blank" rel="noopener" class="text-zinc-500 hover:text-zinc-400 underline">
+              Algorithmica - Eytzinger Binary Search
+            </a>
+          </li>
+          <li>
+            <a href="https://arxiv.org/pdf/1509.05053" target="_blank" rel="noopener" class="text-zinc-500 hover:text-zinc-400 underline">
+              Paper: Array Layouts for Comparison-Based Searching (Khuong & Morin)
+            </a>
+          </li>
+          <li>
+            <a href="https://cglab.ca/~morin/misc/arraylayout/" target="_blank" rel="noopener" class="text-zinc-500 hover:text-zinc-400 underline">
+              Memory Layouts for Binary Search - Pat Morin
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
