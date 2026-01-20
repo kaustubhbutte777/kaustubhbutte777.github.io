@@ -2,12 +2,22 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Terminal from '../components/interactive/Terminal';
 import GlassCard from '../components/ui/GlassCard';
+import ExperienceTimeline from '../components/experience/ExperienceTimeline';
+import SectionNav from '../components/ui/SectionNav';
+
+const sections = [
+  { id: 'profile', label: 'Profile' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'tech-stack', label: 'Tech Stack' },
+  { id: 'education', label: 'Education' },
+];
 ---
 
 <BaseLayout title="About | Portfolio" description="Learn more about me and my journey">
   <section class="py-12 px-4">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-12">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-12 lg:ml-64">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">
           <span class="gradient-text-animated">About Me</span>
         </h1>
@@ -16,232 +26,136 @@ import GlassCard from '../components/ui/GlassCard';
         </p>
       </div>
 
-      <div class="grid lg:grid-cols-2 gap-12 items-start">
-        <!-- Bio Section -->
-        <div>
-          <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-4 text-center">
-            Profile
-          </h3>
-          <div class="flex flex-col gap-6">
-          <GlassCard client:visible hover={false}>
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-20 h-20 rounded-full bg-gradient-to-br from-zinc-300 to-zinc-200 dark:from-zinc-700 dark:to-zinc-600 flex items-center justify-center text-2xl font-bold text-[var(--text-primary)]">
-                KB
-              </div>
+      <!-- Main Layout: Nav + Content -->
+      <div class="lg:flex lg:gap-8">
+        <!-- Left Sidebar Navigation - Sticky -->
+        <aside class="hidden lg:block lg:w-56 lg:flex-shrink-0 lg:self-start lg:sticky lg:top-24">
+          <SectionNav client:load sections={sections} />
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 min-w-0">
+          <!-- Profile Section -->
+          <section id="profile" class="pb-16">
+            <div class="grid lg:grid-cols-2 gap-8 items-start">
+              <!-- Profile Card -->
               <div>
-                <h2 class="text-2xl font-bold text-[var(--text-primary)]">Kaustubh Butte</h2>
-                <p class="text-[var(--text-secondary)]">Senior Software Engineer @ Uber</p>
+                <GlassCard client:visible hover={false}>
+                  <div class="flex items-center gap-4 mb-6">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-zinc-300 to-zinc-200 dark:from-zinc-700 dark:to-zinc-600 flex items-center justify-center text-2xl font-bold text-[var(--text-primary)]">
+                      KB
+                    </div>
+                    <div>
+                      <h2 class="text-2xl font-bold text-[var(--text-primary)]">Kaustubh Butte</h2>
+                      <p class="text-[var(--text-secondary)]">Senior Software Engineer @ Uber</p>
+                    </div>
+                  </div>
+
+                  <div class="prose prose-invert">
+                    <p class="text-[var(--text-secondary)] leading-relaxed">
+                      Hey there! I'm a software engineer passionate about building systems that scale.
+                      I love diving deep into complex problems and emerging with elegant solutions.
+                    </p>
+                    <p class="text-[var(--text-secondary)] leading-relaxed">
+                      When I'm not coding, you'll find me reading about distributed systems,
+                      contributing to open source, or experimenting with new technologies.
+                    </p>
+                  </div>
+                </GlassCard>
+              </div>
+
+              <!-- Terminal -->
+              <div>
+                <Terminal client:load />
               </div>
             </div>
+          </section>
 
-            <div class="prose prose-invert">
-              <p class="text-[var(--text-secondary)] leading-relaxed">
-                Hey there! I'm a software engineer passionate about building systems that scale.
-                I love diving deep into complex problems and emerging with elegant solutions.
-              </p>
-              <p class="text-[var(--text-secondary)] leading-relaxed">
-                When I'm not coding, you'll find me reading about distributed systems,
-                contributing to open source, or experimenting with new technologies.
-              </p>
-              <p class="text-[var(--text-secondary)] leading-relaxed">
-                I believe in writing clean, maintainable code and sharing knowledge
-                through blog posts and open source contributions.
-              </p>
-            </div>
-          </GlassCard>
+          <!-- Experience Section -->
+          <section id="experience" class="py-16">
+            <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-8">Experience</h2>
+            <ExperienceTimeline client:visible />
+          </section>
 
-          <GlassCard client:visible hover={false}>
-            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-4">Tech Stack</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-2">Languages</p>
+          <!-- Tech Stack Section -->
+          <section id="tech-stack" class="py-16">
+            <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-6">Tech Stack</h2>
+            <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <GlassCard client:visible hover={false}>
+                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-3">Languages</p>
                 <div class="flex flex-wrap gap-2">
                   {['Java', 'Go', 'Python', 'C++', 'JavaScript'].map((tech) => (
                     <span class="px-3 py-1 rounded-full bg-zinc-500/20 text-[var(--text-secondary)] text-sm">{tech}</span>
                   ))}
                 </div>
-              </div>
-              <div>
-                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-2">Architecture</p>
+              </GlassCard>
+
+              <GlassCard client:visible hover={false}>
+                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-3">Architecture</p>
                 <div class="flex flex-wrap gap-2">
                   {['Distributed Systems', 'Microservices', 'gRPC'].map((tech) => (
                     <span class="px-3 py-1 rounded-full bg-zinc-500/20 text-[var(--text-secondary)] text-sm">{tech}</span>
                   ))}
                 </div>
-              </div>
-              <div>
-                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-2">Data Stores</p>
+              </GlassCard>
+
+              <GlassCard client:visible hover={false}>
+                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-3">Data Stores</p>
                 <div class="flex flex-wrap gap-2">
                   {['Kafka', 'PostgreSQL', 'Redis', 'Elasticsearch'].map((tech) => (
                     <span class="px-3 py-1 rounded-full bg-zinc-500/20 text-[var(--text-secondary)] text-sm">{tech}</span>
                   ))}
                 </div>
-              </div>
-              <div>
-                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-2">Frameworks</p>
+              </GlassCard>
+
+              <GlassCard client:visible hover={false}>
+                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-3">Frameworks</p>
                 <div class="flex flex-wrap gap-2">
                   {['Dropwizard', 'Flask', 'React', 'Vue.js'].map((tech) => (
                     <span class="px-3 py-1 rounded-full bg-zinc-500/20 text-[var(--text-secondary)] text-sm">{tech}</span>
                   ))}
                 </div>
-              </div>
-              <div>
-                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-2">Infrastructure</p>
+              </GlassCard>
+
+              <GlassCard client:visible hover={false}>
+                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-3">Infrastructure</p>
                 <div class="flex flex-wrap gap-2">
                   {['Terraform', 'Docker', 'Kubernetes', 'AWS'].map((tech) => (
                     <span class="px-3 py-1 rounded-full bg-zinc-500/20 text-[var(--text-secondary)] text-sm">{tech}</span>
                   ))}
                 </div>
-              </div>
-              <div>
-                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-2">Data & ML</p>
+              </GlassCard>
+
+              <GlassCard client:visible hover={false}>
+                <p class="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-3">Data & ML</p>
                 <div class="flex flex-wrap gap-2">
                   {['PySpark', 'OpenCV'].map((tech) => (
                     <span class="px-3 py-1 rounded-full bg-zinc-500/20 text-[var(--text-secondary)] text-sm">{tech}</span>
                   ))}
                 </div>
-              </div>
+              </GlassCard>
             </div>
-          </GlassCard>
+          </section>
 
-          <GlassCard client:visible hover={false}>
-            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-6">Experience</h3>
-            <div class="space-y-6">
-              <!-- Uber -->
-              <div class="relative">
-                <div class="flex items-start gap-4 mb-3">
-                  <div class="w-12 h-12 rounded-lg bg-zinc-950 flex items-center justify-center flex-shrink-0">
-                    <span class="text-zinc-50 font-bold text-lg">U</span>
+          <!-- Education Section -->
+          <section id="education" class="py-16">
+            <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-6">Education</h2>
+            <div class="max-w-2xl">
+              <GlassCard client:visible hover={false}>
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 rounded-lg bg-zinc-700 flex items-center justify-center flex-shrink-0">
+                    <span class="text-zinc-50 font-bold text-sm">BITS</span>
                   </div>
                   <div>
-                    <h4 class="font-semibold text-[var(--text-primary)]">Uber</h4>
-                    <p class="text-[var(--text-muted)] text-sm">Full-time · 3 yrs 8 mos</p>
-                    <p class="text-[var(--text-muted)] text-sm">Bengaluru, Karnataka, India</p>
+                    <h4 class="font-semibold text-[var(--text-primary)]">Birla Institute of Technology and Science, Pilani</h4>
+                    <p class="text-[var(--text-secondary)] text-sm">B.Tech, Electronics and Instrumentation</p>
+                    <p class="text-[var(--text-muted)] text-sm">2016 – 2020 · Grade: 8.87</p>
+                    <p class="text-[var(--text-muted)] text-sm mt-1">Controls department of Technical fest - Quark</p>
                   </div>
                 </div>
-                <div class="ml-6 border-l-2 border-zinc-600 pl-6 space-y-4">
-                  <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-zinc-500"></div>
-                    <h5 class="font-medium text-[var(--text-primary)]">Senior Software Engineer</h5>
-                    <p class="text-[var(--text-muted)] text-sm">Mar 2024 - Present · 1 yr 11 mos</p>
-                    <p class="text-[var(--text-secondary)] text-sm mt-1">Search Platform team</p>
-                  </div>
-                  <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-zinc-600"></div>
-                    <h5 class="font-medium text-[var(--text-primary)]">Software Engineer 2</h5>
-                    <p class="text-[var(--text-muted)] text-sm">Jun 2022 - Feb 2024 · 1 yr 9 mos</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Oracle -->
-              <div class="relative">
-                <div class="flex items-start gap-4 mb-3">
-                  <div class="w-12 h-12 rounded-lg bg-red-600 flex items-center justify-center flex-shrink-0">
-                    <span class="text-zinc-50 font-bold text-lg">O</span>
-                  </div>
-                  <div>
-                    <h4 class="font-semibold text-[var(--text-primary)]">Oracle</h4>
-                    <p class="text-[var(--text-muted)] text-sm">Full-time · 1 yr 7 mos</p>
-                    <p class="text-[var(--text-muted)] text-sm">Nov 2020 - May 2022</p>
-                  </div>
-                </div>
-                <div class="ml-6 border-l-2 border-zinc-600 pl-6">
-                  <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-zinc-500"></div>
-                    <h5 class="font-medium text-[var(--text-primary)]">Software Engineer</h5>
-                    <ul class="text-[var(--text-secondary)] text-sm mt-2 space-y-2 list-disc list-inside">
-                      <li>Working as a backend developer for cloud service - Database Backups and Recovery Service (DBRS)</li>
-                      <li>Worked on achieving high availability of the service by adding replication support to DBRS. Also developed a service that helped transition load from one ZDLRA to another in case one goes down for some reason and is replaced by another.</li>
-                      <li>Developed internal and customer-facing APIs using the Dropwizard framework in Java.</li>
-                      <li>Increased the load handling capacity of the APIs by ~10 times by handling concurrency issues during multiple API requests by implementing Distributed Locking.</li>
-                      <li>Developed Terraform provider for DBRS service in Go language. Terraform relies on plugins called "Providers" to interact with the service's underlying APIs. This provider enabled automating the provisioning of resources for customers.</li>
-                      <li>Developed a framework using which we can simulate some of the dependencies of the service and could provision resources without needing the actual hardware dependencies. This cut down the operational costs by a lot and allowed us to create 1000s of mock resources if needed for testing and development.</li>
-                      <li>Developed a Synchronization service that runs in the background and keeps the data plane and control plane in sync. This service also does a lot of other activities that provide operators an insight into customer usage patterns.</li>
-                      <li>Changed the authorization model to create resources in customer tenancy from S2S to OBO token model.</li>
-                      <li>Technologies: Java, Microservices, Python, Go language, Terraform, Dropwizard framework for REST APIs.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Zendrive -->
-              <div class="relative">
-                <div class="flex items-start gap-4 mb-3">
-                  <div class="w-12 h-12 rounded-lg bg-emerald-600 flex items-center justify-center flex-shrink-0">
-                    <span class="text-zinc-50 font-bold text-lg">Z</span>
-                  </div>
-                  <div>
-                    <h4 class="font-semibold text-[var(--text-primary)]">Zendrive</h4>
-                    <p class="text-[var(--text-muted)] text-sm">Internship · 6 mos</p>
-                    <p class="text-[var(--text-muted)] text-sm">Jan 2020 - Jun 2020 · Greater Bengaluru Area</p>
-                  </div>
-                </div>
-                <div class="ml-6 border-l-2 border-zinc-600 pl-6">
-                  <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-zinc-500"></div>
-                    <h5 class="font-medium text-[var(--text-primary)]">Software Engineer Intern</h5>
-                    <ul class="text-[var(--text-secondary)] text-sm mt-2 space-y-2 list-disc list-inside">
-                      <li>Created an internal API for the company to fetch user logs from Elasticsearch on the basis of the user's inputs.</li>
-                      <li>Added 3 new metrics to measure the performance of the company's SDK.</li>
-                      <li>Built a complete website (backend + frontend) for browsing user SDK logs for analysis. Used Vue.js as the framework.</li>
-                      <li>Tech used: Python, Elasticsearch, Flask, PySpark, Javascript, VueJS</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- CSIR-CEERI -->
-              <div class="relative">
-                <div class="flex items-start gap-4 mb-3">
-                  <div class="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
-                    <span class="text-zinc-50 font-bold text-sm">CSIR</span>
-                  </div>
-                  <div>
-                    <h4 class="font-semibold text-[var(--text-primary)]">CSIR-CEERI</h4>
-                    <p class="text-[var(--text-muted)] text-sm">Internship · 3 mos</p>
-                    <p class="text-[var(--text-muted)] text-sm">May 2018 - Jul 2018</p>
-                  </div>
-                </div>
-                <div class="ml-6 border-l-2 border-zinc-600 pl-6">
-                  <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-zinc-500"></div>
-                    <h5 class="font-medium text-[var(--text-primary)]">Machine Learning Intern</h5>
-                    <ul class="text-[var(--text-secondary)] text-sm mt-2 space-y-2 list-disc list-inside">
-                      <li>(Conference Paper published) Developed a program that detects cancerous cervix images with an accuracy of 96.67%.</li>
-                      <li>GLCM algorithm to extract features from the images and SVM classifier was used for classification.</li>
-                      <li>Modified the code to take video input, because of which the code can be used for real-time detection as well. Also added GUI for easier use.</li>
-                      <li>Tech Used: C++, OpenCV, MATLAB for validating some parameter computations.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+              </GlassCard>
             </div>
-          </GlassCard>
-
-          <GlassCard client:visible hover={false}>
-            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-6">Education</h3>
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 rounded-lg bg-zinc-700 flex items-center justify-center flex-shrink-0">
-                <span class="text-zinc-50 font-bold text-sm">BITS</span>
-              </div>
-              <div>
-                <h4 class="font-semibold text-[var(--text-primary)]">Birla Institute of Technology and Science, Pilani</h4>
-                <p class="text-[var(--text-secondary)] text-sm">B.Tech, Electronics and Instrumentation</p>
-                <p class="text-[var(--text-muted)] text-sm">2016 – 2020 · Grade: 8.87</p>
-                <p class="text-[var(--text-muted)] text-sm mt-1">Controls department of Technical fest - Quark</p>
-              </div>
-            </div>
-          </GlassCard>
-          </div>
-        </div>
-
-        <!-- Terminal Section -->
-        <div class="lg:sticky lg:top-24">
-          <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-4 text-center">
-            Interactive Terminal
-          </h3>
-          <Terminal client:load />
+          </section>
         </div>
       </div>
     </div>
