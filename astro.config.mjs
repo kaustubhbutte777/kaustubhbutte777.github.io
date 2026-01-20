@@ -12,7 +12,13 @@ export default defineConfig({
   integrations: [react(), mdx()],
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['gsap']
+    },
+    optimizeDeps: {
+      include: ['gsap', 'gsap/ScrollTrigger']
+    }
   },
 
   markdown: {

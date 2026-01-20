@@ -1,96 +1,174 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero';
-import GlassCard from '../components/ui/GlassCard';
+import GlowCard from '../components/ui/GlowCard';
+import ScrollAnimation, { StaggerAnimation } from '../components/ui/ScrollAnimation';
 ---
 
-<BaseLayout title="Home | Portfolio">
+<BaseLayout title="Home | Kaustubh Butte">
   <Hero client:load />
 
   <!-- Featured Section -->
-  <section class="py-20 px-4">
+  <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">
-        <span class="gradient-text">What I Do</span>
-      </h2>
-      <p class="text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto">
-        Building scalable systems and crafting beautiful experiences
-      </p>
+      <ScrollAnimation client:visible animation="fadeUp">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">
+          <span class="gradient-text">What I Do</span>
+        </h2>
+        <p class="text-[var(--text-secondary)] text-center mb-16 max-w-2xl mx-auto">
+          Building scalable systems and crafting beautiful experiences
+        </p>
+      </ScrollAnimation>
 
-      <div class="grid md:grid-cols-3 gap-6">
-        <GlassCard client:visible>
-          <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2">Backend Systems</h3>
-          <p class="text-[var(--text-secondary)]">
-            Designing and building high-performance, distributed systems that scale.
-          </p>
-        </GlassCard>
+      <div class="grid md:grid-cols-3 gap-8">
+        <ScrollAnimation client:visible animation="fadeUp" delay={0}>
+          <GlowCard client:visible className="h-full" intensity="medium">
+            <div class="w-12 h-12 rounded-xl bg-zinc-500/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3">Backend Systems</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Designing and building high-performance, distributed systems that scale to millions of users.
+            </p>
+          </GlowCard>
+        </ScrollAnimation>
 
-        <GlassCard client:visible>
-          <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2">Side Projects</h3>
-          <p class="text-[var(--text-secondary)]">
-            Building fun experiments and tools to explore new technologies.
-          </p>
-        </GlassCard>
+        <ScrollAnimation client:visible animation="fadeUp" delay={0.1}>
+          <GlowCard client:visible className="h-full" intensity="medium">
+            <div class="w-12 h-12 rounded-xl bg-zinc-500/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3">Side Projects</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Building fun experiments and tools to explore new technologies and solve interesting problems.
+            </p>
+          </GlowCard>
+        </ScrollAnimation>
 
-        <GlassCard client:visible>
-          <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2">Technical Writing</h3>
-          <p class="text-[var(--text-secondary)]">
-            Sharing knowledge through detailed blog posts and documentation.
-          </p>
-        </GlassCard>
+        <ScrollAnimation client:visible animation="fadeUp" delay={0.2}>
+          <GlowCard client:visible className="h-full" intensity="medium">
+            <div class="w-12 h-12 rounded-xl bg-zinc-500/10 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3">Technical Writing</h3>
+            <p class="text-[var(--text-secondary)] leading-relaxed">
+              Sharing knowledge through detailed blog posts, documentation, and open source contributions.
+            </p>
+          </GlowCard>
+        </ScrollAnimation>
       </div>
     </div>
   </section>
 
   <!-- Recent Posts Preview -->
-  <section class="py-20 px-4">
+  <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
-      <div class="flex items-center justify-between mb-12">
-        <div>
-          <h2 class="text-3xl md:text-4xl font-bold">
-            <span class="gradient-text">Recent Posts</span>
-          </h2>
-          <p class="text-[var(--text-secondary)] mt-2">Thoughts, learnings, and discoveries</p>
+      <ScrollAnimation client:visible animation="fadeUp">
+        <div class="flex items-center justify-between mb-12">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-bold">
+              <span class="gradient-text">Recent Posts</span>
+            </h2>
+            <p class="text-[var(--text-secondary)] mt-2">Thoughts, learnings, and discoveries</p>
+          </div>
+          <a href="/blog" class="btn-glass hidden md:inline-flex items-center gap-2 glow-hover">
+            View All
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
         </div>
-        <a href="/blog" class="btn-glass hidden md:inline-flex items-center gap-2">
-          View All
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </a>
-      </div>
+      </ScrollAnimation>
 
-      <div class="grid md:grid-cols-2 gap-6">
-        <a href="/blog" class="group">
-          <GlassCard client:visible className="h-full">
-            <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-3">
-              <span class="px-2 py-1 rounded-full bg-zinc-700/20 text-zinc-600">Tutorial</span>
-              <span>5 min read</span>
-            </div>
-            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2 group-hover:text-zinc-600 transition-colors">
-              Getting Started with Distributed Systems
-            </h3>
-            <p class="text-[var(--text-secondary)]">
-              An introduction to building scalable distributed systems from scratch.
-            </p>
-          </GlassCard>
-        </a>
+      <div class="grid md:grid-cols-2 gap-8">
+        <ScrollAnimation client:visible animation="fadeUp" delay={0}>
+          <a href="/blog" class="group block h-full">
+            <GlowCard client:visible className="h-full" intensity="subtle">
+              <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
+                <span class="px-2.5 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)]">Tutorial</span>
+                <span>5 min read</span>
+              </div>
+              <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3 group-hover:text-[var(--text-secondary)] transition-colors">
+                Getting Started with Distributed Systems
+              </h3>
+              <p class="text-[var(--text-secondary)] leading-relaxed">
+                An introduction to building scalable distributed systems from scratch.
+              </p>
+            </GlowCard>
+          </a>
+        </ScrollAnimation>
 
-        <a href="/blog" class="group">
-          <GlassCard client:visible className="h-full">
-            <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-3">
-              <span class="px-2 py-1 rounded-full bg-zinc-600/20 text-zinc-500">Deep Dive</span>
-              <span>8 min read</span>
-            </div>
-            <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-2 group-hover:text-zinc-600 transition-colors">
-              Understanding Database Internals
-            </h3>
-            <p class="text-[var(--text-secondary)]">
-              A deep dive into how modern databases work under the hood.
-            </p>
-          </GlassCard>
-        </a>
+        <ScrollAnimation client:visible animation="fadeUp" delay={0.1}>
+          <a href="/blog" class="group block h-full">
+            <GlowCard client:visible className="h-full" intensity="subtle">
+              <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
+                <span class="px-2.5 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)]">Deep Dive</span>
+                <span>8 min read</span>
+              </div>
+              <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3 group-hover:text-[var(--text-secondary)] transition-colors">
+                Understanding Database Internals
+              </h3>
+              <p class="text-[var(--text-secondary)] leading-relaxed">
+                A deep dive into how modern databases work under the hood.
+              </p>
+            </GlowCard>
+          </a>
+        </ScrollAnimation>
       </div>
+    </div>
+  </section>
+
+  <!-- Playground Preview -->
+  <section class="py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+      <ScrollAnimation client:visible animation="fadeUp">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4">
+            <span class="gradient-text">Interactive Playground</span>
+          </h2>
+          <p class="text-[var(--text-secondary)] max-w-2xl mx-auto">
+            Explore interactive visualizations of distributed systems concepts, database internals, and algorithms.
+          </p>
+        </div>
+      </ScrollAnimation>
+
+      <ScrollAnimation client:visible animation="scaleIn">
+        <a href="/playground" class="group block">
+          <div class="relative glass-strong rounded-3xl p-8 md:p-12 overflow-hidden glow-hover">
+            <div class="absolute inset-0 bg-gradient-to-br from-zinc-500/5 via-transparent to-zinc-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative flex flex-col md:flex-row items-center gap-8">
+              <div class="flex-1">
+                <h3 class="text-2xl font-bold text-[var(--text-primary)] mb-4">
+                  Distributed Systems Visualized
+                </h3>
+                <p class="text-[var(--text-secondary)] mb-6 leading-relaxed">
+                  Interactive demos including Raft consensus, consistent hashing, B+ trees, LSM trees, and more.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">Raft</span>
+                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">B+ Tree</span>
+                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">LSM Tree</span>
+                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">WAL</span>
+                </div>
+              </div>
+              <div class="flex-shrink-0">
+                <div class="w-16 h-16 rounded-2xl bg-zinc-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <svg class="w-8 h-8 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </ScrollAnimation>
     </div>
   </section>
 </BaseLayout>
