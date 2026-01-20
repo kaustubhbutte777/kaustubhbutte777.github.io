@@ -28,13 +28,13 @@ export default function WavyGradient({ className = '' }: WavyGradientProps) {
     resize();
     window.addEventListener('resize', resize);
 
-    // Wave parameters - slower speeds, spread across full page
+    // Wave parameters - very slow, subtle movement
     const waves = [
-      { amplitude: 60, frequency: 0.002, speed: 0.00015, phase: 0, yOffset: 0.15 },
-      { amplitude: 50, frequency: 0.0025, speed: 0.00012, phase: 1.5, yOffset: 0.35 },
-      { amplitude: 70, frequency: 0.0015, speed: 0.00018, phase: 3, yOffset: 0.55 },
-      { amplitude: 55, frequency: 0.002, speed: 0.00014, phase: 4.5, yOffset: 0.75 },
-      { amplitude: 45, frequency: 0.0022, speed: 0.00016, phase: 2, yOffset: 0.9 },
+      { amplitude: 50, frequency: 0.0015, speed: 0.00002, phase: 0, yOffset: 0.15 },
+      { amplitude: 40, frequency: 0.002, speed: 0.000015, phase: 1.5, yOffset: 0.35 },
+      { amplitude: 60, frequency: 0.0012, speed: 0.000025, phase: 3, yOffset: 0.55 },
+      { amplitude: 45, frequency: 0.0018, speed: 0.00002, phase: 4.5, yOffset: 0.75 },
+      { amplitude: 35, frequency: 0.002, speed: 0.000018, phase: 2, yOffset: 0.9 },
     ];
 
     // Get theme colors
