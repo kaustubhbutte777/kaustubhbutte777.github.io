@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import WavyGradient from '../../components/ui/WavyGradient';
 
 const posts = await getCollection('blog');
 const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -11,6 +12,7 @@ const otherPosts = sortedPosts.slice(1);
 ---
 
 <BaseLayout title="Blog | Kaustubh Butte" description="Technical articles and thoughts on software engineering">
+  <WavyGradient client:load />
   <!-- Hero Section -->
   <section class="relative py-20 px-4 overflow-hidden">
     <!-- Background decoration -->

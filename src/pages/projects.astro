@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlassCard from '../components/ui/GlassCard';
+import WavyGradient from '../components/ui/WavyGradient';
 
 const projects = [
   {
@@ -37,6 +38,7 @@ const projects = [
 ---
 
 <BaseLayout title="Projects | Portfolio" description="Showcase of my software engineering projects">
+  <WavyGradient client:load />
   <section class="py-12 px-4">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-12">
