@@ -345,13 +345,18 @@ export default function InvertedIndexAdvanced() {
                 </div>
 
                 {/* Posting List Visualization */}
-                <div className="flex items-center gap-1 flex-wrap">
+                <div className="flex items-center gap-1 flex-wrap pt-6">
                   {entry.postings.map((posting, idx) => {
                     const hasSkip = entry.skipList.some(s => s.offset === idx);
                     const isHighlighted = currentHighlight?.docId === posting.docId && currentHighlight?.term === entry.term;
 
                     return (
-                      <div key={posting.docId} className="flex items-center">
+                      <div key={posting.docId} className="flex items-center relative">
+                        {showSkipLists && hasSkip && (
+                          <div className="absolute -top-5 left-0 px-1 py-0.5 rounded bg-yellow-500/20 text-yellow-400 text-xs whitespace-nowrap">
+                            skip↓
+                          </div>
+                        )}
                         <motion.div
                           animate={{
                             scale: isHighlighted ? 1.2 : 1,
@@ -365,13 +370,6 @@ export default function InvertedIndexAdvanced() {
                           <svg className="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
-                        )}
-                        {showSkipLists && hasSkip && (
-                          <div className="absolute -mt-8 ml-1">
-                            <div className="px-1 py-0.5 rounded bg-yellow-500/20 text-yellow-400 text-xs">
-                              skip
-                            </div>
-                          </div>
                         )}
                       </div>
                     );
