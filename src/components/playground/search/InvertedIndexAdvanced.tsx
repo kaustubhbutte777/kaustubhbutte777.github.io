@@ -121,18 +121,52 @@ export default function InvertedIndexAdvanced() {
     [index]
   );
 
+  // Parse query into terms and operators
+  const parseQuery = useCallback((queryText: string): { type: 'term' | 'AND' | 'OR'; value?: string }[] => {
+    const tokens: { type: 'term' | 'AND' | 'OR'; value?: string }[] = [];
+    const parts = queryText.split(/\s+/);
+
+    parts.forEach(part => {
+      const upper = part.toUpperCase();
+      if (upper === 'AND') {
+        tokens.push({ type: 'AND' });
+      } else if (upper === 'OR') {
+        tokens.push({ type: 'OR' });
+      } else if (part.length > 2) {
+        tokens.push({ type: 'term', value: part.toLowerCase() });
+      }
+    });
+
+    return tokens;
+  }, []);
+
   // Simulate Lucene-style query execution with steps
   const executeQuery = useCallback((queryText: string) => {
-    const queryTerms = tokenize(queryText);
+    const parsedQuery = parseQuery(queryText);
     const steps: QueryStep[] = [];
     const scores = new Map<number, number>();
 
-    steps.push({
-      type: 'init',
-      description: `Parsing query: "${queryText}" → terms: [${queryTerms.join(', ')}]`
-    });
+    // Detect if query has operators
+    const hasAnd = parsedQuery.some(t => t.type === 'AND');
+    const hasOr = parsedQuery.some(t => t.type === 'OR');
+    const terms = parsedQuery.filter(t => t.type === 'term').map(t => t.value!);
 
-    queryTerms.forEach(term => {
+    if (hasAnd || hasOr) {
+      steps.push({
+        type: 'init',
+        description: `Parsing boolean query: "${queryText}" → ${hasAnd ? 'AND (intersection)' : 'OR (union)'} operation`
+      });
+    } else {
+      steps.push({
+        type: 'init',
+        description: `Parsing query: "${queryText}" → terms: [${terms.join(', ')}] (implicit OR)`
+      });
+    }
+
+    // Collect posting lists for all terms
+    const postingLists: Map<string, Set<number>> = new Map();
+
+    terms.forEach(term => {
       const entry = index.get(term);
       if (!entry) {
         steps.push({
@@ -149,8 +183,9 @@ export default function InvertedIndexAdvanced() {
         description: `Opening posting list for "${term}" (${entry.df} docs, ${entry.skipList.length} skip pointers)`
       });
 
+      const docIds = new Set<number>();
+
       // Simulate iteration through posting list
-      let skipsUsed = 0;
       entry.postings.forEach((posting, idx) => {
         // Check if we could use a skip pointer (for demonstration)
         const skipPointer = entry.skipList.find(s => s.offset === idx);
@@ -159,10 +194,9 @@ export default function InvertedIndexAdvanced() {
             type: 'skip',
             term,
             docId: posting.docId,
-            description: `Skip pointer available → jump to doc ${skipPointer.docId} (offset ${skipPointer.offset})`,
+            description: `Skip pointer → jump to doc ${skipPointer.docId} (offset ${skipPointer.offset})`,
             highlight: { term, skipTo: skipPointer.docId }
           });
-          skipsUsed++;
         }
 
         steps.push({
@@ -172,6 +206,8 @@ export default function InvertedIndexAdvanced() {
           description: `Reading posting: doc=${posting.docId}, tf=${posting.tf}, positions=[${posting.positions.join(',')}]`,
           highlight: { term, docId: posting.docId }
         });
+
+        docIds.add(posting.docId);
 
         const tfidf = posting.tf * entry.idf;
         scores.set(posting.docId, (scores.get(posting.docId) || 0) + tfidf);
@@ -184,7 +220,45 @@ export default function InvertedIndexAdvanced() {
           highlight: { term, docId: posting.docId }
         });
       });
+
+      postingLists.set(term, docIds);
     });
+
+    // Apply boolean operators
+    let resultDocs: Set<number>;
+
+    if (hasAnd && postingLists.size >= 2) {
+      // Intersection
+      const lists = Array.from(postingLists.values());
+      resultDocs = lists.reduce((acc, curr) => {
+        return new Set([...acc].filter(x => curr.has(x)));
+      });
+
+      steps.push({
+        type: 'match',
+        description: `AND: Intersecting ${postingLists.size} posting lists → ${resultDocs.size} matching docs: [${Array.from(resultDocs).join(', ')}]`
+      });
+
+      // Filter scores to only include intersection results
+      for (const docId of scores.keys()) {
+        if (!resultDocs.has(docId)) {
+          scores.delete(docId);
+        }
+      }
+    } else if (hasOr || postingLists.size >= 1) {
+      // Union (default behavior)
+      const lists = Array.from(postingLists.values());
+      resultDocs = lists.reduce((acc, curr) => {
+        return new Set([...acc, ...curr]);
+      }, new Set<number>());
+
+      if (hasOr) {
+        steps.push({
+          type: 'match',
+          description: `OR: Union of ${postingLists.size} posting lists → ${resultDocs.size} docs: [${Array.from(resultDocs).join(', ')}]`
+        });
+      }
+    }
 
     // Final results
     const rankedDocs = Array.from(scores.entries())
@@ -193,11 +267,11 @@ export default function InvertedIndexAdvanced() {
 
     steps.push({
       type: 'done',
-      description: `Query complete! Top results: ${rankedDocs.map(([id, score]) => `Doc${id}(${score.toFixed(2)})`).join(', ')}`
+      description: `Query complete! ${rankedDocs.length > 0 ? `Top results: ${rankedDocs.map(([id, score]) => `Doc${id}(${score.toFixed(2)})`).join(', ')}` : 'No matching documents'}`
     });
 
     return steps;
-  }, [index]);
+  }, [index, parseQuery]);
 
   const runAnimation = useCallback(async () => {
     if (!query.trim()) return;
@@ -252,7 +326,7 @@ export default function InvertedIndexAdvanced() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && !isAnimating && runAnimation()}
-              placeholder="Try: ride matching drivers, search ranking..."
+              placeholder="Try: ride AND driver, search OR ranking, matching algorithm..."
               className="w-full px-4 py-3 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-[var(--text-primary)] placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
             />
           </div>
