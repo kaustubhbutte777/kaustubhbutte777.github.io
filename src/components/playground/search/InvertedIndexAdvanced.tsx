@@ -110,7 +110,9 @@ export default function InvertedIndexAdvanced() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showSkipLists, setShowSkipLists] = useState(true);
-  const [animationSpeed, setAnimationSpeed] = useState(800);
+  const [animationSpeed, setAnimationSpeed] = useState(1500);
+  const [isPaused, setIsPaused] = useState(false);
+  const pauseRef = useRef(false);
 
   const index = useMemo(() => buildIndex(sampleDocuments), []);
 
@@ -204,14 +206,37 @@ export default function InvertedIndexAdvanced() {
     setQuerySteps(steps);
     setCurrentStep(0);
     setIsAnimating(true);
+    pauseRef.current = false;
+    setIsPaused(false);
 
     for (let i = 0; i < steps.length; i++) {
+      // Check for pause
+      while (pauseRef.current) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
       setCurrentStep(i);
       await new Promise(resolve => setTimeout(resolve, animationSpeed));
     }
 
     setIsAnimating(false);
   }, [query, executeQuery, animationSpeed]);
+
+  const togglePause = () => {
+    pauseRef.current = !pauseRef.current;
+    setIsPaused(!isPaused);
+  };
+
+  const stepForward = () => {
+    if (currentStep < querySteps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const stepBackward = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
 
   const currentHighlight = querySteps[currentStep]?.highlight;
 
@@ -239,75 +264,102 @@ export default function InvertedIndexAdvanced() {
             {isAnimating ? 'Running...' : 'Execute Query'}
           </button>
           <div className="flex items-center gap-2">
-            <label className="text-xs text-zinc-500">Speed:</label>
+            <label className="text-xs text-zinc-500">Delay:</label>
             <input
               type="range"
-              min="200"
-              max="1500"
+              min="500"
+              max="3000"
+              step="100"
               value={animationSpeed}
               onChange={(e) => setAnimationSpeed(Number(e.target.value))}
-              className="w-20"
+              className="w-24"
             />
+            <span className="text-xs text-zinc-400 w-12">{(animationSpeed/1000).toFixed(1)}s</span>
           </div>
+          {isAnimating && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={togglePause}
+                className={`px-3 py-2 rounded-lg text-sm ${
+                  isPaused ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400'
+                }`}
+              >
+                {isPaused ? '▶ Resume' : '⏸ Pause'}
+              </button>
+              <button
+                onClick={stepBackward}
+                disabled={currentStep === 0}
+                className="px-2 py-2 rounded-lg bg-zinc-800/50 text-zinc-400 disabled:opacity-30"
+              >
+                ◀
+              </button>
+              <button
+                onClick={stepForward}
+                disabled={currentStep >= querySteps.length - 1}
+                className="px-2 py-2 rounded-lg bg-zinc-800/50 text-zinc-400 disabled:opacity-30"
+              >
+                ▶
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Query Execution Steps */}
-      <AnimatePresence>
-        {querySteps.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="glass-strong rounded-xl p-6"
-          >
-            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
-              Lucene-style Query Execution
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Query Execution Steps - Now in sidebar */}
+        <div className="lg:col-span-1">
+          <div className="glass-strong rounded-xl p-4 sticky top-24">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
+              Query Execution {querySteps.length > 0 && `(${currentStep + 1}/${querySteps.length})`}
             </h3>
-            <div className="space-y-2 max-h-64 overflow-y-auto font-mono text-sm">
-              {querySteps.slice(0, currentStep + 1).map((step, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={`p-2 rounded ${
-                    i === currentStep ? 'bg-zinc-700/50' : 'bg-zinc-800/30'
-                  } ${
-                    step.type === 'skip' ? 'border-l-2 border-yellow-500' :
-                    step.type === 'match' ? 'border-l-2 border-emerald-500' :
-                    step.type === 'score' ? 'border-l-2 border-blue-500' :
-                    step.type === 'done' ? 'border-l-2 border-purple-500' :
-                    ''
-                  }`}
-                >
-                  <span className={`${
-                    step.type === 'skip' ? 'text-yellow-400' :
-                    step.type === 'score' ? 'text-blue-400' :
-                    step.type === 'done' ? 'text-purple-400' :
-                    'text-zinc-400'
-                  }`}>
-                    [{step.type.toUpperCase()}]
-                  </span>{' '}
-                  <span className="text-zinc-300">{step.description}</span>
-                </motion.div>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center gap-2">
-              <div className="flex-1 bg-zinc-800 rounded-full h-1.5">
-                <div
-                  className="bg-emerald-500 h-1.5 rounded-full transition-all"
-                  style={{ width: `${((currentStep + 1) / querySteps.length) * 100}%` }}
-                />
-              </div>
-              <span className="text-xs text-zinc-500">
-                {currentStep + 1} / {querySteps.length}
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {querySteps.length > 0 ? (
+              <>
+                <div className="space-y-1.5 max-h-80 overflow-y-auto font-mono text-xs">
+                  {querySteps.slice(0, currentStep + 1).map((step, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className={`p-1.5 rounded ${
+                        i === currentStep ? 'bg-zinc-700/50 ring-1 ring-zinc-500' : 'bg-zinc-800/30'
+                      } ${
+                        step.type === 'skip' ? 'border-l-2 border-yellow-500' :
+                        step.type === 'score' ? 'border-l-2 border-blue-500' :
+                        step.type === 'done' ? 'border-l-2 border-purple-500' :
+                        ''
+                      }`}
+                    >
+                      <span className={`${
+                        step.type === 'skip' ? 'text-yellow-400' :
+                        step.type === 'score' ? 'text-blue-400' :
+                        step.type === 'done' ? 'text-purple-400' :
+                        'text-zinc-400'
+                      }`}>
+                        [{step.type.toUpperCase()}]
+                      </span>{' '}
+                      <span className="text-zinc-300">{step.description}</span>
+                    </motion.div>
+                  ))}
+                </div>
+                <div className="mt-3">
+                  <div className="w-full bg-zinc-800 rounded-full h-1">
+                    <div
+                      className="bg-emerald-500 h-1 rounded-full transition-all"
+                      style={{ width: `${((currentStep + 1) / querySteps.length) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-zinc-500">
+                Enter a query and click "Execute" to see step-by-step execution
+              </p>
+            )}
+          </div>
+        </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Posting Lists and Documents - Main content */}
+        <div className="lg:col-span-2 grid md:grid-cols-2 gap-6">
         {/* Posting Lists with Skip Pointers */}
         <div className="glass-strong rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
@@ -450,6 +502,7 @@ export default function InvertedIndexAdvanced() {
               );
             })}
           </div>
+        </div>
         </div>
       </div>
 
