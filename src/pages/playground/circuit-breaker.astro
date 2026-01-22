@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import CircuitBreaker from '../../components/playground/resilience/CircuitBreaker';
+import CircuitBreakerWithMetrics from '../../components/playground/resilience/CircuitBreakerWithMetrics';
 import WavyGradient from '../../components/ui/WavyGradient';
 ---
 
-<BaseLayout title="Circuit Breaker + Rate Limiter | Playground" description="Interactive visualization of circuit breaker pattern and token bucket rate limiting">
+<BaseLayout title="Circuit Breaker + Rate Limiter | Playground" description="Interactive resilience patterns with real-time metrics dashboard">
   <WavyGradient client:load />
   <section class="py-12 px-4">
     <div class="max-w-6xl mx-auto">
@@ -19,12 +19,12 @@ import WavyGradient from '../../components/ui/WavyGradient';
           Circuit Breaker + Rate Limiter
         </h1>
         <p class="text-[var(--text-secondary)] max-w-3xl">
-          Essential resilience patterns for distributed systems. Circuit breakers prevent cascading failures,
-          while rate limiters control throughput and protect services from overload.
+          Resilience patterns with real-time metrics. Watch throughput, latency percentiles (P50/P95/P99),
+          and error rates change as the circuit breaker trips and recovers.
         </p>
       </div>
 
-      <CircuitBreaker client:load />
+      <CircuitBreakerWithMetrics client:load />
     </div>
   </section>
 </BaseLayout>

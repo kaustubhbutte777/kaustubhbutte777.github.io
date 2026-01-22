@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import InvertedIndex from '../../components/playground/search/InvertedIndex';
+import InvertedIndexAdvanced from '../../components/playground/search/InvertedIndexAdvanced';
 import WavyGradient from '../../components/ui/WavyGradient';
 ---
 
-<BaseLayout title="Inverted Index + TF-IDF | Playground" description="Interactive visualization of inverted index and TF-IDF scoring for search engines">
+<BaseLayout title="Inverted Index + TF-IDF | Playground" description="Interactive visualization of inverted index, posting lists, skip pointers, and TF-IDF scoring">
   <WavyGradient client:load />
   <section class="py-12 px-4">
     <div class="max-w-6xl mx-auto">
@@ -19,12 +19,12 @@ import WavyGradient from '../../components/ui/WavyGradient';
           Inverted Index + TF-IDF
         </h1>
         <p class="text-[var(--text-secondary)] max-w-3xl">
-          The foundation of modern search engines. An inverted index maps terms to documents,
-          while TF-IDF scoring determines relevance by balancing term frequency with document rarity.
+          Lucene-style search internals: posting lists, skip pointers, term positions, and TF-IDF scoring.
+          Watch step-by-step query execution as documents are iterated and scored.
         </p>
       </div>
 
-      <InvertedIndex client:load />
+      <InvertedIndexAdvanced client:load />
     </div>
   </section>
 </BaseLayout>
