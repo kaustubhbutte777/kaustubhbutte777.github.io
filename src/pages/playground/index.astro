@@ -5,6 +5,27 @@ import WavyGradient from '../../components/ui/WavyGradient';
 
 const demos = [
   {
+    title: "Inverted Index + TF-IDF",
+    description: "Search engine fundamentals: how terms are indexed and relevance scoring works",
+    href: "/playground/inverted-index",
+    category: "Search",
+    tags: ["Search", "Ranking", "Information Retrieval"]
+  },
+  {
+    title: "Quadtree Geospatial",
+    description: "Spatial indexing for location queries - find nearby drivers like Uber's matching system",
+    href: "/playground/quadtree",
+    category: "Search",
+    tags: ["Geospatial", "Uber", "Location"]
+  },
+  {
+    title: "Bloom Filter",
+    description: "Probabilistic set membership - fast 'definitely not' or 'probably yes' queries",
+    href: "/playground/bloom-filter",
+    category: "Data Structures",
+    tags: ["Probabilistic", "Space-Efficient", "Caching"]
+  },
+  {
     title: "Buffer Pool LRU",
     description: "Interactive visualization of InnoDB's buffer pool management with hot/cold page sublists",
     href: "/playground/buffer-pool",
@@ -33,11 +54,39 @@ const demos = [
     tags: ["Durability", "ACID", "Recovery"]
   },
   {
+    title: "Vector Clocks",
+    description: "Track causality in distributed systems - determine happened-before or concurrent events",
+    href: "/playground/vector-clocks",
+    category: "Distributed",
+    tags: ["Causality", "Ordering", "Lamport"]
+  },
+  {
     title: "Consistent Hashing",
     description: "Visualize how consistent hashing distributes data across nodes with virtual nodes",
     href: "/playground/consistent-hashing",
-    category: "Algorithms",
-    tags: ["Distributed Systems", "Load Balancing", "Sharding"]
+    category: "Distributed",
+    tags: ["Load Balancing", "Sharding", "Ring"]
+  },
+  {
+    title: "Raft Consensus",
+    description: "Leader election and log replication in distributed systems with failure simulation",
+    href: "/playground/raft",
+    category: "Distributed",
+    tags: ["Consensus", "Fault Tolerance", "Replicated State"]
+  },
+  {
+    title: "Two-Phase Commit",
+    description: "Atomic commit protocol for distributed transactions with prepare/commit phases",
+    href: "/playground/two-phase-commit",
+    category: "Distributed",
+    tags: ["Transactions", "ACID", "Coordination"]
+  },
+  {
+    title: "Circuit Breaker + Rate Limiter",
+    description: "Resilience patterns: prevent cascading failures and control request throughput",
+    href: "/playground/circuit-breaker",
+    category: "Resilience",
+    tags: ["Fault Tolerance", "Token Bucket", "Fail Fast"]
   },
   {
     title: "Eytzinger Layout",
@@ -45,20 +94,6 @@ const demos = [
     href: "/playground/eytzinger",
     category: "Algorithms",
     tags: ["Binary Search", "Cache Optimization", "Data Structures"]
-  },
-  {
-    title: "Raft Consensus",
-    description: "Leader election and log replication in distributed systems with failure simulation",
-    href: "/playground/raft",
-    category: "Algorithms",
-    tags: ["Consensus", "Distributed Systems", "Fault Tolerance"]
-  },
-  {
-    title: "Two-Phase Commit",
-    description: "Atomic commit protocol for distributed transactions with prepare/commit phases",
-    href: "/playground/two-phase-commit",
-    category: "Algorithms",
-    tags: ["Transactions", "ACID", "Coordination"]
   },
   {
     title: "Metrics Dashboard",
