@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Document {
@@ -113,6 +113,7 @@ export default function InvertedIndexAdvanced() {
   const [animationSpeed, setAnimationSpeed] = useState(1500);
   const [isPaused, setIsPaused] = useState(false);
   const pauseRef = useRef(false);
+  const logContainerRef = useRef<HTMLDivElement>(null);
 
   const index = useMemo(() => buildIndex(sampleDocuments), []);
 
@@ -314,6 +315,13 @@ export default function InvertedIndexAdvanced() {
 
   const currentHighlight = querySteps[currentStep]?.highlight;
 
+  // Auto-scroll log container when step changes
+  useEffect(() => {
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+    }
+  }, [currentStep]);
+
   return (
     <div className="space-y-6">
       {/* Search Controls */}
@@ -388,7 +396,7 @@ export default function InvertedIndexAdvanced() {
             </h3>
             {querySteps.length > 0 ? (
               <>
-                <div className="space-y-1.5 max-h-80 overflow-y-auto font-mono text-xs">
+                <div ref={logContainerRef} className="space-y-1.5 max-h-80 overflow-y-auto font-mono text-xs">
                   {querySteps.slice(0, currentStep + 1).map((step, i) => (
                     <motion.div
                       key={i}
