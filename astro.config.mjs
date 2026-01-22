@@ -7,7 +7,7 @@ import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://kaustubhbutte.github.io',
+  site: 'https://kaustubhbutte777.github.io',
   output: 'static',
   integrations: [react(), mdx()],
 
