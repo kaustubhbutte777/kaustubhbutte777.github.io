@@ -5,6 +5,9 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import { adminDevPlugin } from './src/plugins/adminDevPlugin';
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,7 +15,10 @@ export default defineConfig({
   output: 'static',
   integrations: [
     react(),
-    mdx(),
+    mdx({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
     sitemap({
       // Control which pages appear in sitemap (and search results)
       filter: (page) => {
@@ -24,7 +30,7 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), adminDevPlugin()],
     ssr: {
       noExternal: ['gsap']
     },
@@ -37,6 +43,8 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-dark',
       wrap: true
-    }
+    },
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
   }
 });

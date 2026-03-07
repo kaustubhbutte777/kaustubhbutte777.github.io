@@ -1,9 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import TableOfContents from '../../components/blog/TableOfContents';
+import ShareButtons from '../../components/blog/ShareButtons';
+import SupportButton from '../../components/blog/SupportButton';
+import NewsletterSignup from '../../components/blog/NewsletterSignup';
+import WavyGradient from '../../components/ui/WavyGradient';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || data.draft !== true);
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
@@ -11,57 +16,244 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
+
+// Calculate reading time if not provided
+const wordCount = post.body?.split(/\s+/).length || 0;
+const readingTime = post.data.readTime || `${Math.ceil(wordCount / 200)} min read`;
+
+// Get current URL for sharing
+const url = Astro.url.href;
 ---
 
 <BaseLayout title={`${post.data.title} | Blog`} description={post.data.description}>
+  <WavyGradient client:load />
   <article class="py-12 px-4">
-    <div class="max-w-3xl mx-auto">
-      <!-- Header -->
-      <header class="mb-12">
-        <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
-          {post.data.tags?.map((tag: string) => (
-            <span class="px-2 py-1 rounded-full bg-zinc-600/20 text-zinc-500">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4">
-          {post.data.title}
-        </h1>
-        <p class="text-xl text-[var(--text-secondary)] mb-6">
-          {post.data.description}
-        </p>
-        <div class="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-          <time datetime={post.data.date.toISOString()}>
-            {new Date(post.data.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </time>
-          <span>•</span>
-          <span>{post.data.readTime || '5 min read'}</span>
-        </div>
-      </header>
+    <div class="max-w-6xl mx-auto">
+      <div class="lg:flex lg:gap-8">
+        <!-- Main Content -->
+        <div class="flex-1 max-w-3xl">
+          <!-- Header -->
+          <header class="mb-12">
+            <a href="/blog" class="text-zinc-500 hover:text-zinc-300 text-sm inline-flex items-center gap-2 mb-6">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Blog
+            </a>
 
-      <!-- Content -->
-      <div class="prose prose-lg prose-invert max-w-none">
-        <Content />
+            <!-- Tags -->
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex flex-wrap items-center gap-2 mb-4">
+                {post.data.tags.map((tag: string) => (
+                  <a
+                    href={`/blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                    class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-sm hover:bg-emerald-500/30 transition-colors"
+                  >
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4">
+              {post.data.title}
+            </h1>
+
+            <p class="text-xl text-[var(--text-secondary)] mb-6">
+              {post.data.description}
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 text-sm text-[var(--text-muted)] pb-6 border-b border-zinc-700/50">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold">
+                  KB
+                </div>
+                <span>{post.data.author || 'Kaustubh Butte'}</span>
+              </div>
+              <span>•</span>
+              <time datetime={post.data.date.toISOString()}>
+                {new Date(post.data.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+              <span>•</span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {readingTime}
+              </span>
+            </div>
+          </header>
+
+          <!-- Thumbnail -->
+          {post.data.thumbnail && (
+            <div class="mb-8 rounded-xl overflow-hidden">
+              <img
+                src={post.data.thumbnail}
+                alt={post.data.title}
+                class="w-full h-auto"
+              />
+            </div>
+          )}
+
+          <!-- Content -->
+          <div class="prose prose-lg prose-invert max-w-none prose-headings:scroll-mt-20 prose-code:before:content-none prose-code:after:content-none prose-pre:relative prose-pre:p-0">
+            <Content />
+          </div>
+
+          <!-- Share & Support -->
+          <footer class="mt-16 pt-8 border-t border-zinc-700/50">
+            <div class="mb-10">
+              <ShareButtons client:load title={post.data.title} url={url} />
+            </div>
+
+            <!-- Buy Me a Coffee - hidden for now
+            <div class="flex flex-wrap items-center gap-4 mb-10">
+              <span class="text-[var(--text-muted)]">Enjoyed this post?</span>
+              <SupportButton client:load />
+            </div>
+            -->
+
+            <div class="mb-10">
+              <NewsletterSignup client:load />
+            </div>
+
+            <a
+              href="/blog"
+              class="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to all posts
+            </a>
+          </footer>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="hidden lg:block lg:w-72 lg:flex-shrink-0">
+          <div class="sticky top-24 space-y-8">
+            {headings.length > 0 && (
+              <TableOfContents client:load headings={headings} />
+            )}
+
+            <div class="glass rounded-xl p-4 mt-4">
+              <h3 class="text-sm font-semibold text-[var(--text-primary)] mb-3">Quick Links</h3>
+              <div class="space-y-2 text-sm">
+                <a href="/blog/archive" class="block text-[var(--text-muted)] hover:text-emerald-400 transition-colors">
+                  Archive
+                </a>
+                <a href="/blog/tags" class="block text-[var(--text-muted)] hover:text-emerald-400 transition-colors">
+                  All Tags
+                </a>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
-
-      <!-- Footer -->
-      <footer class="mt-16 pt-8 border-t border-white/10">
-        <a
-          href="/blog"
-          class="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-300 transition-colors"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to all posts
-        </a>
-      </footer>
     </div>
   </article>
 </BaseLayout>
+
+<style is:global>
+  /* Code block copy button styles */
+  .prose pre {
+    position: relative;
+    padding: 1rem;
+    padding-top: 2.5rem;
+  }
+
+  .prose pre::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    color: #a1a1aa;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 0.5rem 0;
+  }
+
+  .prose pre code {
+    display: block;
+    overflow-x: auto;
+  }
+
+  /* Add copy button via JS - this is handled by the CopyButton component */
+  .copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: rgba(63, 63, 70, 0.5);
+    color: #a1a1aa;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-button:hover {
+    background: rgba(63, 63, 70, 0.8);
+    color: #e4e4e7;
+  }
+
+  /* Heading anchors */
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    position: relative;
+  }
+
+  .prose h2:hover .anchor-link,
+  .prose h3:hover .anchor-link,
+  .prose h4:hover .anchor-link {
+    opacity: 1;
+  }
+
+  .anchor-link {
+    position: absolute;
+    left: -1.5rem;
+    opacity: 0;
+    color: #71717a;
+    transition: opacity 0.2s;
+  }
+
+  .anchor-link:hover {
+    color: #34d399;
+  }
+</style>
+
+<script>
+  // Add copy buttons to code blocks
+  document.querySelectorAll('pre').forEach((pre) => {
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    const button = document.createElement('button');
+    button.className = 'copy-button';
+    button.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>`;
+
+    button.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(code.textContent || '');
+      button.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2">
+        <polyline points="20,6 9,17 4,12"></polyline>
+      </svg>`;
+      setTimeout(() => {
+        button.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>`;
+      }, 2000);
+    });
+
+    pre.appendChild(button);
+  });
+</script>

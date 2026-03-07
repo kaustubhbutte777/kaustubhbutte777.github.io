@@ -1,0 +1,1 @@
+Whenever making any git commit or any git operation, never add claude code credits in it. Also the user who should be pushing the commit and creating a commit should be me "Kaustubh Butte" and not claude code

@@ -3,114 +3,132 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlassCard from '../../components/ui/GlassCard';
 import WavyGradient from '../../components/ui/WavyGradient';
 
-const demos = [
+// Set published: true for demos you want visible in production
+const allDemos = [
   {
     title: "Inverted Index + TF-IDF",
     description: "Search engine fundamentals: how terms are indexed and relevance scoring works",
     href: "/playground/inverted-index",
     category: "Search",
-    tags: ["Search", "Ranking", "Information Retrieval"]
+    tags: ["Search", "Ranking", "Information Retrieval"],
+    published: false,
   },
   {
     title: "Quadtree Geospatial",
     description: "Spatial indexing for location queries - find nearby drivers like Uber's matching system",
     href: "/playground/quadtree",
     category: "Search",
-    tags: ["Geospatial", "Uber", "Location"]
+    tags: ["Geospatial", "Uber", "Location"],
+    published: false,
   },
   {
     title: "Bloom Filter",
     description: "Probabilistic set membership - fast 'definitely not' or 'probably yes' queries",
     href: "/playground/bloom-filter",
     category: "Data Structures",
-    tags: ["Probabilistic", "Space-Efficient", "Caching"]
+    tags: ["Probabilistic", "Space-Efficient", "Caching"],
+    published: false,
   },
   {
     title: "Buffer Pool LRU",
     description: "Interactive visualization of InnoDB's buffer pool management with hot/cold page sublists",
     href: "/playground/buffer-pool",
     category: "Database",
-    tags: ["MySQL", "InnoDB", "Memory Management"]
+    tags: ["MySQL", "InnoDB", "Memory Management"],
+    published: false,
   },
   {
     title: "B+ Tree",
     description: "Self-balancing tree structure used in database indexes with insert, search, and node splitting",
     href: "/playground/bplus-tree",
     category: "Database",
-    tags: ["Indexing", "B-Tree", "Storage Engine"]
+    tags: ["Indexing", "B-Tree", "Storage Engine"],
+    published: false,
   },
   {
     title: "LSM Tree",
     description: "Log-Structured Merge Tree with MemTable, SSTable flush, and compaction visualization",
     href: "/playground/lsm-tree",
     category: "Database",
-    tags: ["RocksDB", "LevelDB", "Write-Optimized"]
+    tags: ["RocksDB", "LevelDB", "Write-Optimized"],
+    published: false,
   },
   {
     title: "Write-Ahead Log",
     description: "WAL for crash recovery with REDO/UNDO phases, checkpoints, and transaction management",
     href: "/playground/wal",
     category: "Database",
-    tags: ["Durability", "ACID", "Recovery"]
+    tags: ["Durability", "ACID", "Recovery"],
+    published: false,
   },
   {
     title: "Vector Clocks",
     description: "Track causality in distributed systems - determine happened-before or concurrent events",
     href: "/playground/vector-clocks",
     category: "Distributed",
-    tags: ["Causality", "Ordering", "Lamport"]
+    tags: ["Causality", "Ordering", "Lamport"],
+    published: false,
   },
   {
     title: "Consistent Hashing",
     description: "Visualize how consistent hashing distributes data across nodes with virtual nodes",
     href: "/playground/consistent-hashing",
     category: "Distributed",
-    tags: ["Load Balancing", "Sharding", "Ring"]
+    tags: ["Load Balancing", "Sharding", "Ring"],
+    published: false,
   },
   {
     title: "Raft Consensus",
     description: "Leader election and log replication in distributed systems with failure simulation",
     href: "/playground/raft",
     category: "Distributed",
-    tags: ["Consensus", "Fault Tolerance", "Replicated State"]
+    tags: ["Consensus", "Fault Tolerance", "Replicated State"],
+    published: false,
   },
   {
     title: "Two-Phase Commit",
     description: "Atomic commit protocol for distributed transactions with prepare/commit phases",
     href: "/playground/two-phase-commit",
     category: "Distributed",
-    tags: ["Transactions", "ACID", "Coordination"]
+    tags: ["Transactions", "ACID", "Coordination"],
+    published: false,
   },
   {
     title: "Circuit Breaker + Rate Limiter",
     description: "Resilience patterns: prevent cascading failures and control request throughput",
     href: "/playground/circuit-breaker",
     category: "Resilience",
-    tags: ["Fault Tolerance", "Token Bucket", "Fail Fast"]
+    tags: ["Fault Tolerance", "Token Bucket", "Fail Fast"],
+    published: false,
   },
   {
     title: "Eytzinger Layout",
     description: "Cache-optimized array layout for binary search using breadth-first tree ordering",
     href: "/playground/eytzinger",
     category: "Algorithms",
-    tags: ["Binary Search", "Cache Optimization", "Data Structures"]
+    tags: ["Binary Search", "Cache Optimization", "Data Structures"],
+    published: false,
   },
   {
     title: "Metrics Dashboard",
     description: "Simulated real-time observability dashboard with latency percentiles and circuit breakers",
     href: "/playground/metrics",
     category: "Observability",
-    tags: ["Monitoring", "SRE", "Alerting"]
+    tags: ["Monitoring", "SRE", "Alerting"],
+    published: false,
   },
   {
     title: "System Design",
     description: "Interactive Uber-style architecture with animated data flow and failure scenarios",
     href: "/playground/system-design",
     category: "Architecture",
-    tags: ["Microservices", "Scalability", "Design"]
+    tags: ["Microservices", "Scalability", "Design"],
+    published: false,
   },
 ];
 
+// Only show published demos
+const demos = allDemos.filter(d => import.meta.env.DEV || d.published);
 const categories = [...new Set(demos.map(d => d.category))];
 ---
 
@@ -128,42 +146,65 @@ const categories = [...new Set(demos.map(d => d.category))];
         </p>
       </div>
 
-      <!-- Category Pills -->
-      <div class="flex flex-wrap justify-center gap-2 mb-8">
-        {categories.map((cat) => (
-          <span class="px-4 py-2 rounded-full glass text-sm text-[var(--text-secondary)]">
-            {cat}
-          </span>
-        ))}
-      </div>
+      {demos.length === 0 ? (
+        <div class="text-center py-20">
+          <div class="glass-strong inline-block p-12 rounded-3xl">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-700/30 flex items-center justify-center">
+              <svg class="w-8 h-8 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h2 class="text-2xl font-semibold text-[var(--text-primary)] mb-3">Coming Soon</h2>
+            <p class="text-[var(--text-secondary)] max-w-md">
+              Interactive demos are being prepared. Check back soon for visualizations of distributed systems and database internals.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          <!-- Category Pills -->
+          <div class="flex flex-wrap justify-center gap-2 mb-8">
+            {categories.map((cat) => (
+              <span class="px-4 py-2 rounded-full glass text-sm text-[var(--text-secondary)]">
+                {cat}
+              </span>
+            ))}
+          </div>
 
-      <!-- Demo Grid -->
-      <div class="grid md:grid-cols-2 gap-6">
-        {demos.map((demo) => (
-          <a href={demo.href} class="group block">
-            <GlassCard client:visible className="h-full hover:border-zinc-700/50 transition-all duration-300">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="px-2 py-1 text-xs rounded-full bg-zinc-700/20 text-zinc-600">
-                  {demo.category}
-                </span>
-              </div>
-              <h2 class="text-xl font-semibold text-[var(--text-primary)] mb-2 group-hover:text-zinc-600 transition-colors">
-                {demo.title}
-              </h2>
-              <p class="text-[var(--text-secondary)] text-sm mb-4">
-                {demo.description}
-              </p>
-              <div class="flex flex-wrap gap-2">
-                {demo.tags.map((tag) => (
-                  <span class="px-2 py-1 text-xs rounded bg-white/5 text-[var(--text-muted)]">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </GlassCard>
-          </a>
-        ))}
-      </div>
+          <!-- Demo Grid -->
+          <div class="grid md:grid-cols-2 gap-6">
+            {demos.map((demo) => (
+              <a href={demo.href} class="group block">
+                <GlassCard client:visible className="h-full hover:border-zinc-700/50 transition-all duration-300">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="px-2 py-1 text-xs rounded-full bg-zinc-700/20 text-zinc-600">
+                      {demo.category}
+                    </span>
+                    {!demo.published && (
+                      <span class="px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                        Hidden
+                      </span>
+                    )}
+                  </div>
+                  <h2 class="text-xl font-semibold text-[var(--text-primary)] mb-2 group-hover:text-zinc-600 transition-colors">
+                    {demo.title}
+                  </h2>
+                  <p class="text-[var(--text-secondary)] text-sm mb-4">
+                    {demo.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {demo.tags.map((tag) => (
+                      <span class="px-2 py-1 text-xs rounded bg-white/5 text-[var(--text-muted)]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </GlassCard>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
 
     </div>
   </section>

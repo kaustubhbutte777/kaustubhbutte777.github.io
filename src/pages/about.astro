@@ -5,12 +5,14 @@ import GlassCard from '../components/ui/GlassCard';
 import ExperienceTimeline from '../components/experience/ExperienceTimeline';
 import SectionNav from '../components/ui/SectionNav';
 import WavyGradient from '../components/ui/WavyGradient';
+import InterestsGallery from '../components/about/InterestsGallery';
 
 const sections = [
   { id: 'profile', label: 'Profile' },
   { id: 'experience', label: 'Experience' },
   { id: 'tech-stack', label: 'Tech Stack' },
   { id: 'education', label: 'Education' },
+  { id: 'interests', label: 'Interests' },
 ];
 ---
 
@@ -157,6 +159,13 @@ const sections = [
                 </div>
               </GlassCard>
             </div>
+          </section>
+
+          <!-- Interests Section -->
+          <section id="interests" class="py-16">
+            <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-2">Beyond Code</h2>
+            <p class="text-[var(--text-secondary)] mb-8">When I'm not writing code, you'll find me exploring these interests</p>
+            <InterestsGallery client:visible />
           </section>
         </div>
       </div>

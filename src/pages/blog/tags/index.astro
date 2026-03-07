@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import WavyGradient from '../../../components/ui/WavyGradient';
+
+const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || data.draft !== true);
+
+// Count tags
+type TagCount = { [tag: string]: number };
+const tagCounts = posts.reduce<TagCount>((acc, post) => {
+  post.data.tags?.forEach((tag: string) => {
+    acc[tag] = (acc[tag] || 0) + 1;
+  });
+  return acc;
+}, {});
+
+// Sort by count, then alphabetically
+const sortedTags = Object.entries(tagCounts).sort((a, b) => {
+  if (b[1] !== a[1]) return b[1] - a[1];
+  return a[0].localeCompare(b[0]);
+});
+
+const maxCount = Math.max(...Object.values(tagCounts), 1);
+---
+
+<BaseLayout title="Tags | Blog" description="Browse posts by topic">
+  <WavyGradient client:load />
+  <section class="py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-12">
+        <a href="/blog" class="text-zinc-500 hover:text-zinc-300 text-sm inline-flex items-center gap-2 mb-4">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Blog
+        </a>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text-animated">Tags</span>
+        </h1>
+        <p class="text-[var(--text-secondary)]">
+          Browse {sortedTags.length} topics across {posts.length} posts
+        </p>
+      </div>
+
+      <!-- Tag Cloud -->
+      <div class="glass-strong rounded-2xl p-8">
+        <div class="flex flex-wrap gap-3">
+          {sortedTags.map(([tag, count]) => {
+            const size = 0.8 + (count / maxCount) * 0.6;
+            return (
+              <a
+                href={`/blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                class="group relative"
+              >
+                <span
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/50 hover:bg-zinc-700/50 transition-all border border-zinc-700/50 hover:border-zinc-600"
+                  style={`font-size: ${size}rem;`}
+                >
+                  <span class="text-[var(--text-secondary)] group-hover:text-emerald-400 transition-colors">
+                    {tag}
+                  </span>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-zinc-700/50 text-zinc-400">
+                    {count}
+                  </span>
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Tags List -->
+      <div class="mt-12 grid md:grid-cols-2 gap-4">
+        {sortedTags.map(([tag, count]) => (
+          <a
+            href={`/blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+            class="glass rounded-xl p-4 hover:bg-[var(--glass-bg-hover)] transition-colors group"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <span class="text-[var(--text-primary)] group-hover:text-emerald-400 transition-colors font-medium">
+                  {tag}
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-[var(--text-muted)]">
+                  {count} {count === 1 ? 'post' : 'posts'}
+                </span>
+                <svg class="w-4 h-4 text-zinc-500 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {sortedTags.length === 0 && (
+        <div class="text-center py-20">
+          <p class="text-[var(--text-muted)]">No tags yet. Check back soon!</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

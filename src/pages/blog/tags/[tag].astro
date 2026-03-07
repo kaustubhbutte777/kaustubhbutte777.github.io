@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import WavyGradient from '../../../components/ui/WavyGradient';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || data.draft !== true);
+
+  // Get all unique tags
+  const tags = new Set<string>();
+  posts.forEach(post => {
+    post.data.tags?.forEach((tag: string) => {
+      tags.add(tag.toLowerCase().replace(/\s+/g, '-'));
+    });
+  });
+
+  return Array.from(tags).map(tag => ({
+    params: { tag },
+    props: { originalTag: tag }
+  }));
+}
+
+const { tag } = Astro.params;
+const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || data.draft !== true);
+
+// Find posts with this tag
+const taggedPosts = posts.filter(post =>
+  post.data.tags?.some((t: string) =>
+    t.toLowerCase().replace(/\s+/g, '-') === tag
+  )
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Get display name of tag
+const displayTag = taggedPosts[0]?.data.tags?.find((t: string) =>
+  t.toLowerCase().replace(/\s+/g, '-') === tag
+) || tag;
+---
+
+<BaseLayout title={`${displayTag} | Tags`} description={`Posts tagged with ${displayTag}`}>
+  <WavyGradient client:load />
+  <section class="py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-12">
+        <a href="/blog/tags" class="text-zinc-500 hover:text-zinc-300 text-sm inline-flex items-center gap-2 mb-4">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          All Tags
+        </a>
+        <div class="flex items-center gap-4 mb-4">
+          <span class="px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-400 text-lg font-medium border border-emerald-500/50">
+            #{displayTag}
+          </span>
+        </div>
+        <p class="text-[var(--text-secondary)]">
+          {taggedPosts.length} {taggedPosts.length === 1 ? 'post' : 'posts'} tagged with "{displayTag}"
+        </p>
+      </div>
+
+      <!-- Posts -->
+      <div class="space-y-4">
+        {taggedPosts.map((post) => (
+          <a
+            href={`/blog/${post.slug}`}
+            class="block glass rounded-xl p-6 hover:bg-[var(--glass-bg-hover)] transition-colors group"
+          >
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex-1">
+                <h2 class="text-xl font-semibold text-[var(--text-primary)] group-hover:text-emerald-400 transition-colors mb-2">
+                  {post.data.title}
+                </h2>
+                <p class="text-[var(--text-secondary)] text-sm line-clamp-2">
+                  {post.data.description}
+                </p>
+              </div>
+              <div class="flex items-center gap-4 text-sm text-[var(--text-muted)] flex-shrink-0">
+                <span>{post.data.readTime || '5 min read'}</span>
+                <span>
+                  {post.data.date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {taggedPosts.length === 0 && (
+        <div class="text-center py-20">
+          <p class="text-[var(--text-muted)]">No posts with this tag yet.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

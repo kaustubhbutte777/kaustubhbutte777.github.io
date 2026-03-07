@@ -1,0 +1,130 @@
+---
+title: "Understanding Consensus in Distributed Systems"
+description: "A deep dive into consensus algorithms, from Paxos to Raft, with mathematical foundations and practical examples."
+date: 2024-01-20
+tags: ["Distributed Systems", "Consensus", "Raft", "Algorithms"]
+readTime: "12 min read"
+thumbnail: "/images/blog/consensus.jpg"
+draft: true
+---
+
+# Understanding Consensus in Distributed Systems
+
+Consensus is a fundamental problem in distributed systems. How do multiple nodes agree on a single value when any of them might fail or messages might be lost?
+
+## The Problem Statement
+
+In a distributed system with $n$ nodes, we want to achieve:
+
+1. **Agreement**: All non-faulty nodes decide on the same value
+2. **Validity**: The decided value was proposed by some node
+3. **Termination**: All non-faulty nodes eventually decide
+
+## The FLP Impossibility Result
+
+Fischer, Lynch, and Patterson proved that in an asynchronous system, consensus is impossible if even one node can fail. The proof shows that there's always a "bivalent" configuration where the outcome is still undetermined.
+
+Formally, if we have $n$ processes and up to $f$ can fail:
+
+$$
+n > 2f + 1
+$$
+
+This gives us the famous requirement: to tolerate $f$ failures, we need at least $2f + 1$ nodes.
+
+## Raft: A Simpler Approach
+
+Raft breaks consensus into three sub-problems:
+
+1. **Leader Election**: Choose a single leader
+2. **Log Replication**: Leader accepts commands and replicates to followers
+3. **Safety**: Ensure logs are consistent
+
+### Log Matching Property
+
+If two logs contain an entry with the same index and term, then:
+- The logs are identical in all preceding entries
+- The entry stores the same command
+
+The probability of split-brain in Raft with $n$ nodes and election timeout $T$ is:
+
+$$
+P(\text{split}) = \left(\frac{T_{max} - T_{min}}{T_{avg}}\right)^n
+$$
+
+## Code Example
+
+Here's a simplified Raft leader election in Go:
+
+```go
+func (rf *Raft) startElection() {
+    rf.mu.Lock()
+    rf.currentTerm++
+    rf.votedFor = rf.me
+    rf.state = Candidate
+    term := rf.currentTerm
+    rf.mu.Unlock()
+
+    votes := 1
+    for i := range rf.peers {
+        if i == rf.me {
+            continue
+        }
+        go func(peer int) {
+            args := RequestVoteArgs{
+                Term:         term,
+                CandidateId:  rf.me,
+                LastLogIndex: rf.getLastLogIndex(),
+                LastLogTerm:  rf.getLastLogTerm(),
+            }
+            var reply RequestVoteReply
+            if rf.sendRequestVote(peer, &args, &reply) {
+                rf.mu.Lock()
+                defer rf.mu.Unlock()
+                if reply.VoteGranted && rf.state == Candidate {
+                    votes++
+                    if votes > len(rf.peers)/2 {
+                        rf.becomeLeader()
+                    }
+                }
+            }
+        }(i)
+    }
+}
+```
+
+## Performance Considerations
+
+The commit latency in Raft is bounded by:
+
+$$
+t_{commit} = t_{leader} + t_{network} + t_{disk}
+$$
+
+Where:
+- $t_{leader}$ is the leader processing time
+- $t_{network}$ is the round-trip time to majority
+- $t_{disk}$ is the durable storage write time
+
+## Conclusion
+
+Understanding consensus is crucial for building reliable distributed systems. While the theory can be complex, implementations like Raft make it accessible for practical use.
+
+## Interactive Demo
+
+Want to see Raft consensus in action? Try the interactive visualization:
+
+import PlaygroundPreview from '../../components/blog/PlaygroundPreview';
+
+<PlaygroundPreview
+  client:load
+  title="Raft Consensus Visualization"
+  description="Watch leader election, log replication, and term changes play out in real-time. Inject failures to see how Raft recovers."
+  href="/playground/algorithms"
+  category="Algorithm Animation"
+/>
+
+## Further Reading
+
+- [The Raft Paper](https://raft.github.io/raft.pdf)
+- [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf)

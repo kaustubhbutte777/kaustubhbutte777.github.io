@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import WavyGradient from '../../components/ui/WavyGradient';
+
+const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || data.draft !== true);
+const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Group posts by year and month
+type PostsByYear = {
+  [year: string]: {
+    [month: string]: typeof posts;
+  };
+};
+
+const postsByYear = sortedPosts.reduce<PostsByYear>((acc, post) => {
+  const year = post.data.date.getFullYear().toString();
+  const month = post.data.date.toLocaleDateString('en-US', { month: 'long' });
+
+  if (!acc[year]) acc[year] = {};
+  if (!acc[year][month]) acc[year][month] = [];
+  acc[year][month].push(post);
+
+  return acc;
+}, {});
+
+const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a));
+---
+
+<BaseLayout title="Archive | Blog" description="All blog posts organized by date">
+  <WavyGradient client:load />
+  <section class="py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-12">
+        <a href="/blog" class="text-zinc-500 hover:text-zinc-300 text-sm inline-flex items-center gap-2 mb-4">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Blog
+        </a>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text-animated">Archive</span>
+        </h1>
+        <p class="text-[var(--text-secondary)]">
+          All posts organized by date • {sortedPosts.length} total posts
+        </p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="space-y-12">
+        {years.map((year) => (
+          <div>
+            <div class="flex items-center gap-4 mb-6">
+              <h2 class="text-3xl font-bold text-[var(--text-primary)]">{year}</h2>
+              <span class="px-3 py-1 rounded-full bg-zinc-700/30 text-zinc-400 text-sm">
+                {Object.values(postsByYear[year]).flat().length} posts
+              </span>
+            </div>
+
+            <div class="space-y-8 pl-4 border-l-2 border-zinc-700/50">
+              {Object.entries(postsByYear[year]).map(([month, monthPosts]) => (
+                <div class="relative">
+                  <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-zinc-700 border-2 border-zinc-600"></div>
+                  <h3 class="text-lg font-semibold text-[var(--text-secondary)] mb-4 ml-4">{month}</h3>
+                  <div class="space-y-3 ml-4">
+                    {monthPosts.map((post) => (
+                      <a
+                        href={`/blog/${post.slug}`}
+                        class="block glass rounded-lg p-4 hover:bg-[var(--glass-bg-hover)] transition-colors group"
+                      >
+                        <div class="flex items-center justify-between gap-4">
+                          <div class="flex-1 min-w-0">
+                            <h4 class="font-medium text-[var(--text-primary)] group-hover:text-emerald-400 transition-colors truncate">
+                              {post.data.title}
+                            </h4>
+                            <p class="text-sm text-[var(--text-muted)] truncate">{post.data.description}</p>
+                          </div>
+                          <div class="flex items-center gap-3 flex-shrink-0">
+                            <span class="text-xs text-[var(--text-muted)]">
+                              {post.data.readTime || '5 min read'}
+                            </span>
+                            <span class="text-xs text-zinc-500">
+                              {post.data.date.toLocaleDateString('en-US', { day: 'numeric' })}
+                            </span>
+                          </div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {sortedPosts.length === 0 && (
+        <div class="text-center py-20">
+          <p class="text-[var(--text-muted)]">No posts yet. Check back soon!</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

@@ -9,6 +9,8 @@ const blogCollection = defineCollection({
     tags: z.array(z.string()).optional(),
     readTime: z.string().optional(),
     draft: z.boolean().optional().default(false),
+    thumbnail: z.string().optional(),
+    author: z.string().optional().default('Kaustubh Butte'),
   }),
 });
 
