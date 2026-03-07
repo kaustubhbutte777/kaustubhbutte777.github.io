@@ -39,12 +39,19 @@ function clearToken() {
 }
 
 async function ghFetch(path: string, token: string, options?: RequestInit) {
-  const res = await fetch(`https://api.github.com${path}`, {
+  // Add cache-busting for GET requests to avoid stale SHA values
+  const separator = path.includes('?') ? '&' : '?';
+  const url = options?.method === 'PUT'
+    ? `https://api.github.com${path}`
+    : `https://api.github.com${path}${separator}_=${Date.now()}`;
+
+  const res = await fetch(url, {
     ...options,
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.github.v3+json',
       'Content-Type': 'application/json',
+      'If-None-Match': '',
       ...options?.headers,
     },
   });
