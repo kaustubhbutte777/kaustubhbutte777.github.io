@@ -1,9 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero';
 import GlowCard from '../components/ui/GlowCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import WavyGradient from '../components/ui/WavyGradient';
+
+// Pull real published blog posts
+const allPosts = await getCollection('blog', ({ data }) => import.meta.env.DEV || data.draft !== true);
+const recentPosts = allPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
 ---
 
 <BaseLayout title="Home | Kaustubh Butte">
@@ -68,7 +75,7 @@ import WavyGradient from '../components/ui/WavyGradient';
     </div>
   </section>
 
-  <!-- Recent Posts Preview -->
+  <!-- Recent Posts Section -->
   <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
       <ScrollReveal client:visible animation="fadeUp">
@@ -79,54 +86,52 @@ import WavyGradient from '../components/ui/WavyGradient';
             </h2>
             <p class="text-[var(--text-secondary)] mt-2">Thoughts, learnings, and discoveries</p>
           </div>
-          <a href="/blog" class="btn-glass hidden md:inline-flex items-center gap-2 glow-hover">
-            View All
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
+          {recentPosts.length > 0 && (
+            <a href="/blog" class="btn-glass hidden md:inline-flex items-center gap-2 glow-hover">
+              View All
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          )}
         </div>
       </ScrollReveal>
 
-      <div class="grid md:grid-cols-2 gap-8">
-        <ScrollReveal client:visible animation="fadeUp" delay={0}>
-          <a href="/blog" class="group block h-full">
-            <GlowCard client:visible className="h-full" intensity="subtle">
-              <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
-                <span class="px-2.5 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)]">Tutorial</span>
-                <span>5 min read</span>
-              </div>
-              <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3 group-hover:text-[var(--text-secondary)] transition-colors">
-                Getting Started with Distributed Systems
-              </h3>
-              <p class="text-[var(--text-secondary)] leading-relaxed">
-                An introduction to building scalable distributed systems from scratch.
-              </p>
-            </GlowCard>
-          </a>
+      {recentPosts.length > 0 ? (
+        <div class="grid md:grid-cols-2 gap-8">
+          {recentPosts.map((post, i) => (
+            <ScrollReveal client:visible animation="fadeUp" delay={i * 0.1}>
+              <a href={`/blog/${post.slug}`} class="group block h-full">
+                <GlowCard client:visible className="h-full" intensity="subtle">
+                  <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
+                    {post.data.tags?.[0] && (
+                      <span class="px-2.5 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)]">{post.data.tags[0]}</span>
+                    )}
+                    {post.data.readTime && <span>{post.data.readTime}</span>}
+                  </div>
+                  <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3 group-hover:text-[var(--text-secondary)] transition-colors">
+                    {post.data.title}
+                  </h3>
+                  <p class="text-[var(--text-secondary)] leading-relaxed">
+                    {post.data.description}
+                  </p>
+                </GlowCard>
+              </a>
+            </ScrollReveal>
+          ))}
+        </div>
+      ) : (
+        <ScrollReveal client:visible animation="fadeUp">
+          <div class="glass-strong rounded-2xl p-8 md:p-12 text-center">
+            <p class="text-[var(--text-secondary)] text-lg mb-1">Posts are brewing in the background.</p>
+            <p class="text-[var(--text-muted)] text-sm">First one drops soon — no ETA, just vibes.</p>
+          </div>
         </ScrollReveal>
-
-        <ScrollReveal client:visible animation="fadeUp" delay={0.1}>
-          <a href="/blog" class="group block h-full">
-            <GlowCard client:visible className="h-full" intensity="subtle">
-              <div class="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-4">
-                <span class="px-2.5 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)]">Deep Dive</span>
-                <span>8 min read</span>
-              </div>
-              <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-3 group-hover:text-[var(--text-secondary)] transition-colors">
-                Understanding Database Internals
-              </h3>
-              <p class="text-[var(--text-secondary)] leading-relaxed">
-                A deep dive into how modern databases work under the hood.
-              </p>
-            </GlowCard>
-          </a>
-        </ScrollReveal>
-      </div>
+      )}
     </div>
   </section>
 
-  <!-- Playground Preview -->
+  <!-- Playground Preview (links to /playground, no hardcoded demo names) -->
   <section class="py-24 px-4">
     <div class="max-w-6xl mx-auto">
       <ScrollReveal client:visible animation="fadeUp">
@@ -150,14 +155,8 @@ import WavyGradient from '../components/ui/WavyGradient';
                   Distributed Systems Visualized
                 </h3>
                 <p class="text-[var(--text-secondary)] mb-6 leading-relaxed">
-                  Interactive demos including Raft consensus, consistent hashing, B+ trees, LSM trees, and more.
+                  Interactive demos that bring complex concepts to life. Learn by experimenting with consensus algorithms, data structures, and more.
                 </p>
-                <div class="flex flex-wrap gap-2">
-                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">Raft</span>
-                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">B+ Tree</span>
-                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">LSM Tree</span>
-                  <span class="px-3 py-1 rounded-full bg-zinc-500/15 text-[var(--text-secondary)] text-sm">WAL</span>
-                </div>
               </div>
               <div class="flex-shrink-0">
                 <div class="w-16 h-16 rounded-2xl bg-zinc-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
