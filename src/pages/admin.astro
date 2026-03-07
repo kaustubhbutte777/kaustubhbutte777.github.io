@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminDashboard from '../components/admin/AdminDashboard';
+import WavyGradient from '../components/ui/WavyGradient';
+---
+
+<BaseLayout title="Admin | Kaustubh Butte" description="Content management" noindex={true}>
+  <WavyGradient client:load />
+  <section class="py-16 px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="inline-block px-4 py-1.5 rounded-full glass text-sm text-amber-400 mb-6 border border-amber-500/30">
+          Admin Panel
+        </span>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text-animated">Content Manager</span>
+        </h1>
+        <p class="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
+          Toggle blog posts and playground demos between draft and live.
+          Changes commit directly to GitHub and trigger a deploy.
+        </p>
+      </div>
+
+      <AdminDashboard client:load />
+    </div>
+  </section>
+</BaseLayout>
