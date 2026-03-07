@@ -23,6 +23,17 @@ interface PlaygroundFile {
   demos: PlaygroundDemo[];
 }
 
+interface InterestItem {
+  title: string;
+  published: boolean;
+}
+
+interface InterestsFile {
+  content: string;
+  sha: string;
+  items: InterestItem[];
+}
+
 function getStoredToken(): string | null {
   try { return localStorage.getItem('gh_admin_token'); }
   catch { return null; }
@@ -103,11 +114,31 @@ function togglePublishedInContent(content: string, title: string): string {
   return content.replace(regex, `$1${newVal}`);
 }
 
+function parseInterestsItems(content: string): InterestItem[] {
+  const items: InterestItem[] = [];
+  const regex = /\{\s*\n\s*id:\s*['"][^'"]+['"][\s\S]*?title:\s*['"]([^'"]+)['"][\s\S]*?published:\s*(true|false)/g;
+  let m;
+  while ((m = regex.exec(content)) !== null) {
+    items.push({ title: m[1], published: m[2] === 'true' });
+  }
+  return items;
+}
+
+function toggleInterestInContent(content: string, title: string): string {
+  const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(title:\\s*['"]${escaped}['"][\\s\\S]*?published:\\s*)(true|false)`);
+  const match = content.match(regex);
+  if (!match) return content;
+  const newVal = match[2] === 'true' ? 'false' : 'true';
+  return content.replace(regex, `$1${newVal}`);
+}
+
 export default function AdminDashboard() {
   const [token, setToken] = useState<string | null>(null);
   const [tokenInput, setTokenInput] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [playground, setPlayground] = useState<PlaygroundFile | null>(null);
+  const [interests, setInterests] = useState<InterestsFile | null>(null);
   const [loading, setLoading] = useState(false);
   const [toggling, setToggling] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -157,6 +188,15 @@ export default function AdminDashboard() {
       const pgContent = atob(pgData.content.replace(/\n/g, ''));
       const demos = parsePlaygroundDemos(pgContent);
       setPlayground({ content: pgContent, sha: pgData.sha, demos });
+
+      // Fetch interests gallery
+      const igData = await ghFetch(
+        `/repos/${REPO_OWNER}/${REPO_NAME}/contents/src/components/about/InterestsGallery.tsx?ref=${BRANCH}`,
+        t
+      );
+      const igContent = atob(igData.content.replace(/\n/g, ''));
+      const interestItems = parseInterestsItems(igContent);
+      setInterests({ content: igContent, sha: igData.sha, items: interestItems });
     } catch (err: any) {
       setError(err.message || 'Failed to fetch content');
     }
@@ -179,6 +219,7 @@ export default function AdminDashboard() {
     setToken(null);
     setPosts([]);
     setPlayground(null);
+    setInterests(null);
   };
 
   const handleToggleDraft = async (post: BlogPost) => {
@@ -246,6 +287,41 @@ export default function AdminDashboard() {
       );
 
       setLastAction(`${newPublished ? 'Published' : 'Hidden'} "${demo.title}" — deploying...`);
+      await fetchContent(token);
+    } catch (err: any) {
+      setError(err.message);
+    }
+    setToggling(null);
+  };
+
+  const handleToggleInterest = async (item: InterestItem) => {
+    if (!token || !interests) return;
+    setToggling(`interest-${item.title}`);
+    setError(null);
+    try {
+      const fileData = await ghFetch(
+        `/repos/${REPO_OWNER}/${REPO_NAME}/contents/src/components/about/InterestsGallery.tsx?ref=${BRANCH}`,
+        token
+      );
+      const content = atob(fileData.content.replace(/\n/g, ''));
+      const newContent = toggleInterestInContent(content, item.title);
+      const newPublished = !item.published;
+
+      await ghFetch(
+        `/repos/${REPO_OWNER}/${REPO_NAME}/contents/src/components/about/InterestsGallery.tsx`,
+        token,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            message: `${newPublished ? 'Publish' : 'Hide'} interest: ${item.title}`,
+            content: btoa(unescape(encodeURIComponent(newContent))),
+            sha: fileData.sha,
+            branch: BRANCH,
+          }),
+        }
+      );
+
+      setLastAction(`${newPublished ? 'Published' : 'Hidden'} "${item.title}" — deploying...`);
       await fetchContent(token);
     } catch (err: any) {
       setError(err.message);
@@ -398,7 +474,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Playground Demos */}
-          <div className="glass-strong rounded-2xl p-6">
+          <div className="glass-strong rounded-2xl p-6 mb-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center">
                 <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -436,6 +512,53 @@ export default function AdminDashboard() {
                           }`}
                       >
                         {isToggling ? 'Saving...' : demo.published ? 'Live' : 'Hidden'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Beyond Code / Interests */}
+          <div className="glass-strong rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-8 rounded-lg bg-purple-500/15 flex items-center justify-center">
+                <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Beyond Code</h3>
+              <span className="text-xs text-[var(--text-muted)]">({interests?.items.length || 0})</span>
+            </div>
+
+            {!interests || interests.items.length === 0 ? (
+              <p className="text-sm text-[var(--text-muted)] py-4">No interests found.</p>
+            ) : (
+              <div className="space-y-2">
+                {interests.items.map(item => {
+                  const isToggling = toggling === `interest-${item.title}`;
+                  return (
+                    <div
+                      key={item.title}
+                      className="flex items-center justify-between py-3 px-4 rounded-xl
+                                 bg-zinc-800/30 hover:bg-zinc-800/50 transition-colors"
+                    >
+                      <p className="text-sm font-medium text-[var(--text-primary)] truncate flex-1 mr-4">
+                        {item.title}
+                      </p>
+                      <button
+                        onClick={() => handleToggleInterest(item)}
+                        disabled={isToggling}
+                        className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all
+                          ${isToggling ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:scale-105'}
+                          ${item.published
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          }`}
+                      >
+                        {isToggling ? 'Saving...' : item.published ? 'Live' : 'Hidden'}
                       </button>
                     </div>
                   );

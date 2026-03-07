@@ -92,6 +92,43 @@ function toggleBlogDraft(root: string, slug: string): boolean {
   return false;
 }
 
+function getInterestsGallery(root: string) {
+  const filePath = join(root, 'src/components/about/InterestsGallery.tsx');
+  try {
+    const content = readFileSync(filePath, 'utf-8');
+    const items: { title: string; published: boolean }[] = [];
+    const regex = /\{\s*\n\s*id:\s*['"][^'"]+['"][\s\S]*?title:\s*['"]([^'"]+)['"][\s\S]*?published:\s*(true|false)/g;
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      items.push({ title: match[1], published: match[2] === 'true' });
+    }
+    return items;
+  } catch {
+    return [];
+  }
+}
+
+function toggleInterestPublished(root: string, title: string): boolean {
+  const filePath = join(root, 'src/components/about/InterestsGallery.tsx');
+  try {
+    let content = readFileSync(filePath, 'utf-8');
+    const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const blockRegex = new RegExp(
+      `(title:\\s*['"]${escapedTitle}['"][\\s\\S]*?published:\\s*)(true|false)`,
+    );
+    const match = content.match(blockRegex);
+    if (match) {
+      const newValue = match[2] === 'true' ? 'false' : 'true';
+      content = content.replace(blockRegex, `$1${newValue}`);
+      writeFileSync(filePath, content, 'utf-8');
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 function togglePlaygroundPublished(root: string, title: string): boolean {
   const filePath = join(root, 'src/pages/playground/index.astro');
   try {
@@ -138,8 +175,9 @@ export function adminDevPlugin(): Plugin {
         if (req.method === 'GET' && req.url === '/api/admin/status') {
           const posts = getBlogPosts(projectRoot);
           const demos = getPlaygroundDemos(projectRoot);
+          const interests = getInterestsGallery(projectRoot);
           res.statusCode = 200;
-          res.end(JSON.stringify({ posts, demos }));
+          res.end(JSON.stringify({ posts, demos, interests }));
           return;
         }
 
@@ -153,6 +191,21 @@ export function adminDevPlugin(): Plugin {
             return;
           }
           const success = toggleBlogDraft(projectRoot, slug);
+          res.statusCode = success ? 200 : 404;
+          res.end(JSON.stringify({ success }));
+          return;
+        }
+
+        // POST /api/admin/toggle-interest
+        if (req.method === 'POST' && req.url === '/api/admin/toggle-interest') {
+          const body = await parseBody(req);
+          const title = body.title;
+          if (!title) {
+            res.statusCode = 400;
+            res.end(JSON.stringify({ error: 'title is required' }));
+            return;
+          }
+          const success = toggleInterestPublished(projectRoot, title);
           res.statusCode = success ? 200 : 404;
           res.end(JSON.stringify({ success }));
           return;

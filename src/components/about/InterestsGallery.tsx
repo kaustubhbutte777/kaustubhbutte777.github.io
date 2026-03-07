@@ -7,38 +7,46 @@ interface GalleryItem {
   description: string;
   image: string;
   category: string;
+  published: boolean;
 }
 
-const galleryItems: GalleryItem[] = [
+// Set published: true for items you want visible in production
+const allGalleryItems: GalleryItem[] = [
   {
     id: '1',
     title: 'Homemade Pizza',
     description: 'Weekend pizza making with sourdough crust and fresh toppings.',
     image: '/images/interests/pizza.jpg',
-    category: 'Cooking'
+    category: 'Cooking',
+    published: false,
   },
   {
     id: '2',
     title: 'South Indian Thali',
     description: 'Exploring the diverse flavors of South Indian cuisine.',
     image: '/images/interests/thali.jpg',
-    category: 'Cooking'
+    category: 'Cooking',
+    published: false,
   },
   {
     id: '3',
     title: 'Mechanical Keyboards',
     description: 'Custom mechanical keyboard builds with Cherry MX switches.',
     image: '/images/interests/keyboard.jpg',
-    category: 'Tech'
+    category: 'Tech',
+    published: false,
   },
   {
     id: '4',
     title: 'Travel Photography',
     description: 'Capturing moments from travels around the world.',
     image: '/images/interests/travel.jpg',
-    category: 'Photography'
+    category: 'Photography',
+    published: false,
   },
 ];
+
+const galleryItems = allGalleryItems.filter(item => import.meta.env.DEV || item.published);
 
 export default function InterestsGallery() {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);

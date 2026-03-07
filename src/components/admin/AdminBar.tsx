@@ -11,9 +11,15 @@ interface PlaygroundDemo {
   published: boolean;
 }
 
+interface InterestItem {
+  title: string;
+  published: boolean;
+}
+
 interface AdminStatus {
   posts: BlogPost[];
   demos: PlaygroundDemo[];
+  interests: InterestItem[];
 }
 
 export default function AdminBar() {
@@ -64,6 +70,21 @@ export default function AdminBar() {
       await fetchStatus();
     } catch (err) {
       console.error('Admin: failed to toggle published', err);
+    }
+    setToggling(null);
+  };
+
+  const toggleInterest = async (title: string) => {
+    setToggling(`interest-${title}`);
+    try {
+      await fetch('/api/admin/toggle-interest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+      await fetchStatus();
+    } catch (err) {
+      console.error('Admin: failed to toggle interest', err);
     }
     setToggling(null);
   };
@@ -176,6 +197,42 @@ export default function AdminBar() {
                             }`}
                         >
                           {toggling === `demo-${demo.title}` ? '...' : demo.published ? 'Live' : 'Hidden'}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Interests Gallery */}
+              <div className="mt-5">
+                <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">
+                  Beyond Code ({status.interests?.length || 0})
+                </h4>
+                {!status.interests || status.interests.length === 0 ? (
+                  <p className="text-xs text-zinc-600">No interests found</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {status.interests.map(item => (
+                      <div
+                        key={item.title}
+                        className="flex items-center justify-between py-2 px-3 rounded-lg
+                                   bg-zinc-800/50 hover:bg-zinc-800 transition-colors"
+                      >
+                        <span className="text-sm text-zinc-300 truncate flex-1 mr-3" title={item.title}>
+                          {item.title}
+                        </span>
+                        <button
+                          onClick={() => toggleInterest(item.title)}
+                          disabled={toggling === `interest-${item.title}`}
+                          className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors
+                            ${toggling === `interest-${item.title}` ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
+                            ${item.published
+                              ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+                              : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
+                            }`}
+                        >
+                          {toggling === `interest-${item.title}` ? '...' : item.published ? 'Live' : 'Hidden'}
                         </button>
                       </div>
                     ))}
