@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TableOfContents from '../../components/blog/TableOfContents';
 import ShareButtons from '../../components/blog/ShareButtons';
 import SupportButton from '../../components/blog/SupportButton';
-import NewsletterSignup from '../../components/blog/NewsletterSignup';
+
 import WavyGradient from '../../components/ui/WavyGradient';
 
 export async function getStaticPaths() {
@@ -107,9 +107,6 @@ const url = Astro.url.href;
 
           <!-- Share & Support -->
           <footer class="mt-16 pt-8 border-t border-zinc-700/50">
-            <div class="mb-10">
-              <ShareButtons client:load title={post.data.title} url={url} />
-            </div>
 
             <!-- Buy Me a Coffee - hidden for now
             <div class="flex flex-wrap items-center gap-4 mb-10">
@@ -118,9 +115,6 @@ const url = Astro.url.href;
             </div>
             -->
 
-            <div class="mb-10">
-              <NewsletterSignup client:load />
-            </div>
 
             <a
               href="/blog"

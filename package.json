@@ -8,6 +8,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:theme": "node scripts/check-theme-colors.js",
+    "test": "vitest run",
+    "test:fast": "vitest run --exclude tests/build.test.ts",
     "fix:theme": "node scripts/fix-theme-colors.js",
     "prepare": "husky"
   },
@@ -36,6 +38,7 @@
     "three": "^0.182.0"
   },
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "vitest": "^3.2.4"
   }
 }
