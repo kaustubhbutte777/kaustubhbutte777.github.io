@@ -56,10 +56,10 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                 });
                 setActiveId(heading.slug);
               }}
-              className={`block text-sm py-1 transition-colors ${
+              className={`block text-sm py-1.5 px-2 rounded-lg transition-all ${
                 activeId === heading.slug
-                  ? 'text-emerald-400 font-medium'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                  ? 'text-emerald-400 font-medium bg-emerald-500/10'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-zinc-500/10'
               }`}
             >
               {heading.text}
