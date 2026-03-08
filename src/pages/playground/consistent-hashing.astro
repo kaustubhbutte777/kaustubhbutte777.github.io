@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import ConsistentHashRing from '../../components/playground/algorithms/ConsistentHashRing';
 ---
 
@@ -16,6 +17,9 @@ import ConsistentHashRing from '../../components/playground/algorithms/Consisten
       </div>
 
       <ConsistentHashRing client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/consistent-hashing" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

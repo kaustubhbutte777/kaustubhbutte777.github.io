@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import LSMTree from '../../components/playground/db/LSMTree';
 ---
 
@@ -16,6 +17,9 @@ import LSMTree from '../../components/playground/db/LSMTree';
       </div>
 
       <LSMTree client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/lsm-tree" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

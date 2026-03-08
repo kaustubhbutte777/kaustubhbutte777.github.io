@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import WALVisualizer from '../../components/playground/db/WALVisualizer';
 ---
 
@@ -16,6 +17,9 @@ import WALVisualizer from '../../components/playground/db/WALVisualizer';
       </div>
 
       <WALVisualizer client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/wal" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

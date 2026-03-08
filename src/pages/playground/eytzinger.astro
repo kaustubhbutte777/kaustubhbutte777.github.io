@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import EytzingerLayout from '../../components/playground/algorithms/EytzingerLayout';
 ---
 
@@ -46,6 +47,9 @@ import EytzingerLayout from '../../components/playground/algorithms/EytzingerLay
             </a>
           </li>
         </ul>
+      </div>
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/eytzinger" label="Like" />
       </div>
     </div>
   </section>

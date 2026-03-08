@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import BloomFilter from '../../components/playground/datastructures/BloomFilter';
 import WavyGradient from '../../components/ui/WavyGradient';
 ---
@@ -25,6 +26,9 @@ import WavyGradient from '../../components/ui/WavyGradient';
       </div>
 
       <BloomFilter client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/bloom-filter" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

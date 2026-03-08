@@ -3,8 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TableOfContents from '../../components/blog/TableOfContents';
 import ShareButtons from '../../components/blog/ShareButtons';
-import SupportButton from '../../components/blog/SupportButton';
-
+import LikeButton from '../../components/ui/LikeButton';
 import WavyGradient from '../../components/ui/WavyGradient';
 
 export async function getStaticPaths() {
@@ -105,16 +104,11 @@ const url = Astro.url.href;
             <Content />
           </div>
 
-          <!-- Share & Support -->
+          <!-- Like & Navigation -->
           <footer class="mt-16 pt-8 border-t border-zinc-700/50">
-
-            <!-- Buy Me a Coffee - hidden for now
             <div class="flex flex-wrap items-center gap-4 mb-10">
-              <span class="text-[var(--text-muted)]">Enjoyed this post?</span>
-              <SupportButton client:load />
+              <LikeButton client:load slug={`blog/${post.id}`} label="Like" />
             </div>
-            -->
-
 
             <a
               href="/blog"

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import BufferPoolLRU from '../../components/playground/db/BufferPoolLRU';
 ---
 
@@ -16,6 +17,9 @@ import BufferPoolLRU from '../../components/playground/db/BufferPoolLRU';
       </div>
 
       <BufferPoolLRU client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/buffer-pool" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

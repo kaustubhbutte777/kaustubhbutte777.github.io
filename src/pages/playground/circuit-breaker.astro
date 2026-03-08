@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import CircuitBreakerWithMetrics from '../../components/playground/resilience/CircuitBreakerWithMetrics';
 import WavyGradient from '../../components/ui/WavyGradient';
 ---
@@ -25,6 +26,9 @@ import WavyGradient from '../../components/ui/WavyGradient';
       </div>
 
       <CircuitBreakerWithMetrics client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/circuit-breaker" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

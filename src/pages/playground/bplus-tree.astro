@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import BPlusTree from '../../components/playground/db/BPlusTree';
 ---
 
@@ -16,6 +17,9 @@ import BPlusTree from '../../components/playground/db/BPlusTree';
       </div>
 
       <BPlusTree client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/bplus-tree" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

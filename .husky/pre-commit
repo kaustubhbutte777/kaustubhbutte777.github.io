@@ -1,2 +1,2 @@
 node scripts/check-theme-colors.js
-npx vitest run --exclude tests/build.test.ts
+node node_modules/.bin/vitest run --exclude tests/build.test.ts

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import SystemDesignVisualizer from '../../components/playground/system-design/SystemDesignVisualizer';
 ---
 
@@ -16,6 +17,9 @@ import SystemDesignVisualizer from '../../components/playground/system-design/Sy
       </div>
 
       <SystemDesignVisualizer client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/system-design" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

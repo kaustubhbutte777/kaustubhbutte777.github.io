@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/ui/LikeButton';
 import MetricsDashboard from '../../components/playground/metrics/MetricsDashboard';
 ---
 
@@ -16,6 +17,9 @@ import MetricsDashboard from '../../components/playground/metrics/MetricsDashboa
       </div>
 
       <MetricsDashboard client:load />
+      <div class="mt-8 flex justify-center">
+        <LikeButton client:load slug="playground/metrics" label="Like" />
+      </div>
     </div>
   </section>
 </BaseLayout>

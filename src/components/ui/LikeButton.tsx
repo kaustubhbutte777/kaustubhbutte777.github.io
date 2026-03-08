@@ -1,0 +1,112 @@
+import { useState, useEffect, useCallback } from 'react';
+
+const UPSTASH_URL = import.meta.env.PUBLIC_UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = import.meta.env.PUBLIC_UPSTASH_REDIS_REST_TOKEN;
+
+interface LikeButtonProps {
+  slug: string;
+  label?: string;
+}
+
+function getLikedSlugs(): Set<string> {
+  try {
+    const stored = localStorage.getItem('liked_slugs');
+    return new Set(stored ? JSON.parse(stored) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveLikedSlug(slug: string) {
+  try {
+    const liked = getLikedSlugs();
+    liked.add(slug);
+    localStorage.setItem('liked_slugs', JSON.stringify([...liked]));
+  } catch {
+    /* ignore */
+  }
+}
+
+async function redisGet(key: string): Promise<number> {
+  try {
+    const res = await fetch(`${UPSTASH_URL}/get/${key}`, {
+      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+    });
+    const data = await res.json();
+    return parseInt(data.result, 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+async function redisIncr(key: string): Promise<number> {
+  try {
+    const res = await fetch(`${UPSTASH_URL}/incr/${key}`, {
+      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+    });
+    const data = await res.json();
+    return parseInt(data.result, 10) || 0;
+  } catch {
+    return -1;
+  }
+}
+
+export default function LikeButton({ slug, label }: LikeButtonProps) {
+  const [count, setCount] = useState<number | null>(null);
+  const [liked, setLiked] = useState(false);
+  const [animating, setAnimating] = useState(false);
+
+  const redisKey = `likes:${slug}`;
+
+  useEffect(() => {
+    setLiked(getLikedSlugs().has(slug));
+    redisGet(redisKey).then(setCount);
+  }, [slug, redisKey]);
+
+  const handleLike = useCallback(async () => {
+    if (liked) return;
+
+    setAnimating(true);
+    setLiked(true);
+    setCount(prev => (prev ?? 0) + 1);
+    saveLikedSlug(slug);
+
+    const newCount = await redisIncr(redisKey);
+    if (newCount >= 0) {
+      setCount(newCount);
+    }
+
+    setTimeout(() => setAnimating(false), 600);
+  }, [liked, slug, redisKey]);
+
+  return (
+    <button
+      onClick={handleLike}
+      disabled={liked}
+      className={`group inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm
+                  transition-all duration-300 select-none
+                  ${liked
+                    ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                    : 'glass text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/20 border border-transparent cursor-pointer'
+                  }`}
+      title={liked ? 'You liked this!' : 'Like this'}
+    >
+      <svg
+        className={`w-4 h-4 transition-transform duration-300 ${animating ? 'scale-125' : ''} ${liked ? 'fill-rose-400' : 'fill-none group-hover:fill-rose-400/30'}`}
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        strokeWidth={liked ? 0 : 2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        />
+      </svg>
+      <span>
+        {count !== null ? count : '\u00B7\u00B7\u00B7'}
+        {label && <span className="ml-1 hidden sm:inline">{liked ? 'Liked' : label}</span>}
+      </span>
+    </button>
+  );
+}
