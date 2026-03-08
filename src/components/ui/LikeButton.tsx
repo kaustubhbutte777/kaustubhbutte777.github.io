@@ -17,19 +17,24 @@ function getLikedSlugs(): Set<string> {
   }
 }
 
-function saveLikedSlug(slug: string) {
+function setLikedSlug(slug: string, isLiked: boolean) {
   try {
     const liked = getLikedSlugs();
-    liked.add(slug);
+    if (isLiked) {
+      liked.add(slug);
+    } else {
+      liked.delete(slug);
+    }
     localStorage.setItem('liked_slugs', JSON.stringify([...liked]));
   } catch {
     /* ignore */
   }
 }
 
-async function redisGet(key: string): Promise<number> {
+async function redisCmd(cmd: string, key: string): Promise<number> {
+  if (!UPSTASH_URL || !UPSTASH_TOKEN) return 0;
   try {
-    const res = await fetch(`${UPSTASH_URL}/get/${key}`, {
+    const res = await fetch(`${UPSTASH_URL}/${cmd}/${key}`, {
       headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
     });
     const data = await res.json();
@@ -39,57 +44,49 @@ async function redisGet(key: string): Promise<number> {
   }
 }
 
-async function redisIncr(key: string): Promise<number> {
-  try {
-    const res = await fetch(`${UPSTASH_URL}/incr/${key}`, {
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
-    });
-    const data = await res.json();
-    return parseInt(data.result, 10) || 0;
-  } catch {
-    return -1;
-  }
-}
-
 export default function LikeButton({ slug, label }: LikeButtonProps) {
   const [count, setCount] = useState<number | null>(null);
   const [liked, setLiked] = useState(false);
   const [animating, setAnimating] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const redisKey = `likes:${slug}`;
 
   useEffect(() => {
     setLiked(getLikedSlugs().has(slug));
-    redisGet(redisKey).then(setCount);
+    redisCmd('get', redisKey).then(setCount);
   }, [slug, redisKey]);
 
-  const handleLike = useCallback(async () => {
-    if (liked) return;
-
+  const handleToggle = useCallback(async () => {
+    if (busy) return;
+    setBusy(true);
     setAnimating(true);
-    setLiked(true);
-    setCount(prev => (prev ?? 0) + 1);
-    saveLikedSlug(slug);
 
-    const newCount = await redisIncr(redisKey);
+    const willLike = !liked;
+    setLiked(willLike);
+    setCount(prev => Math.max(0, (prev ?? 0) + (willLike ? 1 : -1)));
+    setLikedSlug(slug, willLike);
+
+    const newCount = await redisCmd(willLike ? 'incr' : 'decr', redisKey);
     if (newCount >= 0) {
       setCount(newCount);
     }
 
     setTimeout(() => setAnimating(false), 600);
-  }, [liked, slug, redisKey]);
+    setBusy(false);
+  }, [liked, busy, slug, redisKey]);
 
   return (
     <button
-      onClick={handleLike}
-      disabled={liked}
+      onClick={handleToggle}
+      disabled={busy}
       className={`group inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm
-                  transition-all duration-300 select-none
+                  transition-all duration-300 select-none cursor-pointer
                   ${liked
-                    ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
-                    : 'glass text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/20 border border-transparent cursor-pointer'
+                    ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30 hover:bg-rose-500/10'
+                    : 'glass text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/20 border border-transparent'
                   }`}
-      title={liked ? 'You liked this!' : 'Like this'}
+      title={liked ? 'Unlike' : 'Like this'}
     >
       <svg
         className={`w-4 h-4 transition-transform duration-300 ${animating ? 'scale-125' : ''} ${liked ? 'fill-rose-400' : 'fill-none group-hover:fill-rose-400/30'}`}
