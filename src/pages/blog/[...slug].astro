@@ -129,6 +129,10 @@ const url = Astro.url.href;
               <TableOfContents client:load headings={headings} />
             )}
 
+            <div class="glass rounded-xl p-4">
+              <LikeButton client:load slug={`blog/${post.id}`} label="Like this post" />
+            </div>
+
             <div class="glass rounded-xl p-4 mt-4">
               <h3 class="text-sm font-semibold text-[var(--text-primary)] mb-3">Quick Links</h3>
               <div class="space-y-2 text-sm">
