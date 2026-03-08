@@ -34,7 +34,8 @@ function setLikedSlug(slug: string, isLiked: boolean) {
 async function redisCmd(cmd: string, key: string): Promise<number> {
   if (!UPSTASH_URL || !UPSTASH_TOKEN) return 0;
   try {
-    const res = await fetch(`${UPSTASH_URL}/${cmd}/${key}`, {
+    const encodedKey = encodeURIComponent(key);
+    const res = await fetch(`${UPSTASH_URL}/${cmd}/${encodedKey}`, {
       headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
     });
     const data = await res.json();
